@@ -37,6 +37,10 @@ export default defineConfig({
       base,
       includeHtmlHeadLinks: false,
       injectRegister: 'script-defer',
+      devOptions: {
+        enabled: true,
+        type: 'module'
+      },
       manifest: {
         name: seoSiteName,
         short_name: seoTitle,
