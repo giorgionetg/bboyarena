@@ -1,0 +1,64 @@
+---
+import Layout from '../components/layout/Layout.astro';
+
+const leaderboardData = [
+  { rank: 1, name: 'Rubble Fox', crew: 'Spray Unit', score: 12540, date: 'Today' },
+  { rank: 2, name: 'Concrete Kid', crew: 'Brick Line', score: 9870, date: 'Yesterday' },
+  { rank: 3, name: 'Sidewalk Nine', crew: 'Dust Crew', score: 8425, date: 'Jun 15' },
+  { rank: 4, name: 'Lime Shade', crew: 'Court Crew', score: 7190, date: 'Jun 14' },
+  { rank: 5, name: 'Paper Tag', crew: 'Bench Unit', score: 6540, date: 'Jun 12' }
+];
+---
+
+<Layout
+  title="Breakdance 3D - Dev Leaderboard"
+  description="Internal leaderboard sandbox for ranking and board experiments."
+  locale="en-US"
+  pagePath="/__dev/leaderboard"
+  noindex
+>
+  <div class="mx-auto flex w-full max-w-4xl flex-col gap-6">
+    <section class="street-panel rounded-[1.75rem] p-5 sm:p-7">
+      <div class="flex flex-col gap-2 text-center">
+        <p class="text-[10px] font-black uppercase tracking-[0.36em] text-[#756553]">Dev board</p>
+        <h1 class="text-3xl font-black uppercase tracking-[0.2em] text-[#2d261f] sm:text-4xl">
+          Leaderboard sandbox
+        </h1>
+        <p class="mx-auto max-w-2xl text-sm leading-relaxed text-[#54483b]">
+          Internal route for testing rankings, board layout, and table density.
+        </p>
+      </div>
+
+      <div class="mt-6 overflow-hidden rounded-[1.25rem] border-2 border-[#4f4337] bg-[#e8dcc8] shadow-[0_10px_0_rgba(95,82,69,0.75)]">
+        <div class="overflow-x-auto">
+          <table class="w-full border-collapse text-left">
+            <thead>
+              <tr class="border-b-2 border-[#4f4337] bg-[#6a5c4f] text-[10px] uppercase tracking-[0.28em] text-[#f7f1e6]">
+                <th class="w-16 py-4 px-4 text-center">Pos</th>
+                <th class="py-4 px-4">Handle</th>
+                <th class="py-4 px-4">Crew</th>
+                <th class="py-4 px-4 text-right">Score</th>
+                <th class="py-4 px-4 text-right">Run</th>
+              </tr>
+            </thead>
+            <tbody>
+              {leaderboardData.map((player, index) => (
+                <tr class={`border-b border-[#cab79f] text-sm ${index % 2 === 0 ? 'bg-[#f3eadc]' : 'bg-[#e8dcc8]'}`}>
+                  <td class="py-4 px-4 text-center font-black text-[#2d261f]">{player.rank}</td>
+                  <td class="py-4 px-4 font-black uppercase tracking-[0.12em] text-[#2d261f]">{player.name}</td>
+                  <td class="py-4 px-4">
+                    <span class="street-chip rounded-full px-3 py-1 text-[10px] font-black uppercase tracking-[0.24em] bg-[#e7ddd0] text-[#5b5247]">
+                      {player.crew}
+                    </span>
+                  </td>
+                  <td class="py-4 px-4 text-right font-black text-[#2d261f]">{player.score.toLocaleString()}</td>
+                  <td class="py-4 px-4 text-right text-xs uppercase tracking-[0.18em] text-[#6b5e4f]">{player.date}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </div>
+</Layout>

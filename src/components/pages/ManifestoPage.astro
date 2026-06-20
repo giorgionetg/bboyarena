@@ -1,0 +1,120 @@
+---
+import Layout from '../layout/Layout.astro';
+import SecondaryCTA from '../cta/SecondaryCTA.astro';
+import { buildLocalizedPath, type LocaleCode } from '../../lib/i18n';
+import { getHomeCopy } from '../../lib/home';
+import { getManifestoAlternates, getManifestoCopy, getManifestoSwitcherLinks, MANIFESTO_PATH } from '../../lib/manifesto';
+
+interface Props {
+  locale: LocaleCode;
+}
+
+const { locale } = Astro.props as Props;
+const copy = getManifestoCopy(locale);
+const homeCopy = getHomeCopy(locale);
+const discordHref = import.meta.env.PUBLIC_DISCORD_URL?.trim() ?? buildLocalizedPath(locale, '/contact');
+const githubHref =
+  import.meta.env.PUBLIC_GITHUB_URL?.trim() ??
+  (process.env.GITHUB_REPOSITORY ? `https://github.com/${process.env.GITHUB_REPOSITORY}` : buildLocalizedPath(locale, '/open-development'));
+const newsletterHref = import.meta.env.PUBLIC_NEWSLETTER_URL?.trim() ?? buildLocalizedPath(locale, '/contact');
+const secondaryCtasHref = '#manifesto-secondary-ctas';
+---
+
+<Layout
+  title={copy.seoTitle}
+  description={copy.seoDescription}
+  locale={locale}
+  pagePath={MANIFESTO_PATH}
+  canonical={buildLocalizedPath(locale, MANIFESTO_PATH)}
+  alternateLinks={getManifestoAlternates()}
+  localeSwitcherLinks={getManifestoSwitcherLinks()}
+  fullBleedMain={true}
+  plainBackground={true}
+  type="article"
+  section="Manifesto"
+  author="Breakdance 3D"
+  tags={['breaking', 'manifesto', 'browser game']}
+>
+  <article class="mx-auto w-full max-w-3xl px-1 py-2 sm:px-2">
+    <header class="space-y-6 border-b border-[#4f4337]/20 pb-8">
+      <p class="text-[10px] font-black uppercase tracking-[0.4em] text-[#756553]">{copy.heroLabel}</p>
+      <h1 class="max-w-2xl text-4xl font-black uppercase leading-[0.88] tracking-[0.12em] text-[#2d261f] sm:text-6xl">
+        {copy.heroTitle}
+      </h1>
+      <p class="max-w-2xl text-base leading-relaxed text-[#54483b] sm:text-lg">
+        {copy.heroLead}
+      </p>
+
+      <div class="flex flex-wrap gap-3 pt-2">
+        <a href={secondaryCtasHref} class="street-button street-button-primary inline-flex min-h-11 items-center rounded-full px-4 py-2 text-[10px] font-black uppercase tracking-[0.26em] transition">
+          {copy.communityCta}
+        </a>
+        <a href="#manifesto" class="street-button inline-flex min-h-11 items-center rounded-full px-4 py-2 text-[10px] font-black uppercase tracking-[0.26em] text-[#2d251d] transition hover:bg-[#f4ebdf]">
+          {copy.readCta}
+        </a>
+      </div>
+    </header>
+
+    <section id="manifesto" class="space-y-5 py-10 text-sm leading-relaxed text-[#54483b] sm:text-base">
+      {copy.manifesto.map((paragraph) => <p>{paragraph}</p>)}
+    </section>
+
+    <section class="grid gap-6 border-y border-[#4f4337]/20 py-8 sm:grid-cols-2">
+      <div class="space-y-4">
+        <h2 class="text-lg font-black uppercase tracking-[0.14em] text-[#2d261f]">{copy.isTitle}</h2>
+        <ul class="list-disc space-y-2 pl-5 text-sm leading-relaxed text-[#54483b] sm:text-base">
+          {copy.isItems.map((item) => <li>{item}</li>)}
+        </ul>
+      </div>
+
+      <div class="space-y-4">
+        <h2 class="text-lg font-black uppercase tracking-[0.14em] text-[#2d261f]">{copy.isNotTitle}</h2>
+        <ul class="list-disc space-y-2 pl-5 text-sm leading-relaxed text-[#54483b] sm:text-base">
+          {copy.isNotItems.map((item) => <li>{item}</li>)}
+        </ul>
+      </div>
+    </section>
+
+    <section class="space-y-4 py-10 text-sm leading-relaxed text-[#54483b] sm:text-base">
+      <h2 class="text-lg font-black uppercase tracking-[0.14em] text-[#2d261f]">{copy.closingTitle}</h2>
+      {copy.closing.map((paragraph) => <p>{paragraph}</p>)}
+    </section>
+
+    <section id="manifesto-secondary-ctas" class="grid gap-4 pt-0 lg:grid-cols-2 lg:pt-8 xl:pt-10">
+      <SecondaryCTA
+        label={homeCopy.discordLabel}
+        title={homeCopy.discordTitle}
+        description={homeCopy.discordDescription}
+        cta={homeCopy.discordCta}
+        href={discordHref}
+        icon="discord"
+        external={Boolean(import.meta.env.PUBLIC_DISCORD_URL?.trim())}
+        buttonPlacement="bottom"
+        buttonWidth="full"
+      />
+      <SecondaryCTA
+        label={homeCopy.githubLabel}
+        title={homeCopy.githubTitle}
+        description={homeCopy.githubDescription}
+        cta={homeCopy.githubCta}
+        href={githubHref}
+        icon="github"
+        external={!import.meta.env.PUBLIC_GITHUB_URL?.trim() && Boolean(process.env.GITHUB_REPOSITORY)}
+        buttonPlacement="bottom"
+        buttonWidth="full"
+      />
+      <SecondaryCTA
+        label={homeCopy.newsletterLabel}
+        title={homeCopy.newsletterTitle}
+        description={homeCopy.newsletterDescription}
+        cta={homeCopy.newsletterCta}
+        href={newsletterHref}
+        icon="newsletter"
+        external={Boolean(import.meta.env.PUBLIC_NEWSLETTER_URL?.trim())}
+        buttonPlacement="bottom"
+        buttonWidth="full"
+        class="lg:col-span-2"
+      />
+    </section>
+  </article>
+</Layout>

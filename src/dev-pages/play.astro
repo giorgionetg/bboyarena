@@ -1,0 +1,43 @@
+---
+import Layout from '../components/layout/Layout.astro';
+import GameApp from '../components/game/GameApp';
+
+---
+
+<Layout
+  title="Breakdance 3D - Dev Play"
+  description="Internal playground for the battle screen and gameplay experiments."
+  locale="en-US"
+  pagePath="/__dev/play"
+  noindex
+>
+  <div class="mx-auto flex w-full max-w-6xl flex-col gap-4">
+    <section class="street-panel rounded-[1.5rem] p-4 sm:p-5">
+      <div class="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
+        <div>
+          <p class="text-[10px] font-black uppercase tracking-[0.36em] text-[#756553]">Dev play</p>
+          <h1 class="mt-2 text-3xl font-black uppercase tracking-[0.18em] text-[#2d261f] sm:text-4xl">
+            Battle screen sandbox
+          </h1>
+          <p class="mt-2 max-w-2xl text-sm leading-relaxed text-[#54483b]">
+            Internal route for gameplay, HUD, crew selection, and battle experiments.
+          </p>
+        </div>
+
+        <div class="flex flex-wrap gap-2">
+          <span class="street-chip rounded-full px-3 py-1 text-[10px] font-black uppercase tracking-[0.28em] text-[#463a2f]">Drag camera</span>
+          <span class="street-chip rounded-full px-3 py-1 text-[10px] font-black uppercase tracking-[0.28em] text-[#463a2f]">Stamina / combo</span>
+          <span class="street-chip rounded-full px-3 py-1 text-[10px] font-black uppercase tracking-[0.28em] text-[#463a2f]">Crew battle</span>
+        </div>
+      </div>
+    </section>
+
+    <div class="w-full">
+      <GameApp client:only="react" locale="en-US" />
+    </div>
+
+    <div class="street-dark rounded-[1.25rem] px-4 py-3 text-center text-[10px] uppercase tracking-[0.26em] text-[#f2eadc]">
+      Internal test space only.
+    </div>
+  </div>
+</Layout>

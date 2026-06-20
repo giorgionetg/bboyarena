@@ -1,0 +1,147 @@
+---
+import Layout from '../../../../components/layout/Layout.astro';
+import {
+  NEWS_CATEGORIES,
+  getNewsCategoryPath,
+  getNewsItemByCategoryAndSlug,
+  getNewsItemsByCategory,
+  type NewsCategory,
+  isExternalNewsItem
+} from '../../../../lib/news';
+import {
+  buildLocalizedAlternates,
+  buildLocalizedPath,
+  getLocaleCodeFromPath,
+  getSiteCopy,
+  SUPPORTED_LOCALES
+} from '../../../../lib/i18n';
+
+export async function getStaticPaths() {
+  const paths: { params: { locale: string; category: string; slug: string } }[] = [];
+  const localePaths = SUPPORTED_LOCALES.filter((locale) => locale !== 'en-US').map((locale) =>
+    locale === 'pt-BR' ? 'pt-br' : locale === 'zh-Hans' ? 'zh' : locale === 'it-IT' ? 'it' : 'es'
+  );
+
+  for (const locale of localePaths) {
+    for (const category of Object.keys(NEWS_CATEGORIES)) {
+      const items = await getNewsItemsByCategory(category as NewsCategory);
+      for (const item of items) {
+        paths.push({ params: { locale, category, slug: item.slug } });
+      }
+    }
+  }
+
+  return paths;
+}
+
+const locale = getLocaleCodeFromPath(Astro.params.locale);
+const copy = getSiteCopy(locale);
+const categoryParam = Astro.params.category ?? '';
+const slug = Astro.params.slug ?? '';
+const category = NEWS_CATEGORIES[categoryParam as NewsCategory];
+const item = await getNewsItemByCategoryAndSlug(categoryParam as NewsCategory, slug);
+
+if (!item) {
+  throw new Error(`News item not found for ${categoryParam}/${slug}`);
+}
+---
+
+<Layout
+  title={`${item.title} - Breakdance 3D`}
+  description={item.description}
+  locale={locale}
+  pagePath={`/news/${item.category}/${item.slug}`}
+  canonical={
+    isExternalNewsItem(item)
+      ? item.sourceUrl
+      : buildLocalizedPath(locale, `${getNewsCategoryPath(item.category)}/${item.slug}`)
+  }
+  alternateLinks={buildLocalizedAlternates(`/news/${item.category}/${item.slug}`)}
+  type="article"
+  noindex={isExternalNewsItem(item)}
+  siteName="Breakdance 3D"
+  image={item.image}
+  imageAlt={item.imageAlt}
+  author={isExternalNewsItem(item) ? item.sourceName : item.author}
+  publishedTime={item.publishedTime}
+  modifiedTime={item.modifiedTime}
+  section={category.title}
+  tags={item.tags}
+>
+  <article class="mx-auto flex w-full max-w-4xl flex-col gap-6">
+    <section class="street-panel rounded-[1.75rem] p-5 sm:p-7">
+      <div class="flex flex-wrap items-center gap-2 text-[10px] font-black uppercase tracking-[0.24em]">
+        <span class="street-chip rounded-full px-2.5 py-1" style={`background:${category.accent}22;color:${category.accent}`}>
+          {copy.news.categories[category.slug].label}
+        </span>
+        <span class="text-[#756553]">{new Date(item.publishedTime).toLocaleDateString('en-US')}</span>
+        {isExternalNewsItem(item) && <span class="text-[#bc613a]">{item.sourceName}</span>}
+      </div>
+
+      <h1 class="mt-4 text-4xl font-black uppercase leading-[0.92] tracking-[0.15em] text-[#2d261f] sm:text-5xl">{item.title}</h1>
+      <p class="mt-4 max-w-3xl text-sm leading-relaxed text-[#54483b] sm:text-base">{item.description}</p>
+
+      <div class="mt-5 flex flex-wrap items-center gap-3 text-[10px] font-black uppercase tracking-[0.24em]">
+        <a href={buildLocalizedPath(locale, `/news/${item.category}`)} class="street-button rounded-full px-3 py-1.5 text-[#2d251d] transition hover:bg-[#f4ebdf]">
+          {copy.news.backToArchive}
+        </a>
+        {isExternalNewsItem(item) && (
+          <a href={item.sourceUrl} target="_blank" rel="noreferrer" class="text-[#bc613a] transition hover:text-[#9d4d2d]">
+            {copy.news.openSource}
+          </a>
+        )}
+      </div>
+    </section>
+
+    <section class="grid gap-4 lg:grid-cols-[1.1fr_0.9fr]">
+      <div class="street-dark rounded-[1.75rem] p-5 sm:p-7">
+        <p class="text-[10px] font-black uppercase tracking-[0.36em] text-[#d9c9b1]">{copy.news.story}</p>
+        <div class="mt-5 space-y-4 text-sm leading-relaxed text-[#f8f1e7]">
+          {isExternalNewsItem(item) ? (
+            <>
+              <p>This story comes from <strong>{item.sourceName}</strong> and is shown in the project as an editorial summary.</p>
+              <p>{item.excerpt}</p>
+              <p>
+                The original version lives on the external source, and this page deliberately stays aligned with `noindex` to avoid SEO duplication.
+              </p>
+            </>
+          ) : (
+            item.body.map((paragraph) => <p>{paragraph}</p>)
+          )}
+        </div>
+      </div>
+
+      <aside class="street-panel rounded-[1.75rem] p-5 sm:p-7">
+        <p class="text-[10px] font-black uppercase tracking-[0.36em] text-[#756553]">{copy.news.metadata}</p>
+        <div class="mt-4 space-y-3 text-sm leading-relaxed text-[#54483b]">
+          <p>
+            <span class="font-black uppercase tracking-[0.18em] text-[#2d261f]">{copy.news.category}:</span> {category.title}
+          </p>
+          <p>
+            <span class="font-black uppercase tracking-[0.18em] text-[#2d261f]">{copy.news.author}:</span>{' '}
+            {isExternalNewsItem(item) ? item.sourceName : item.author}
+          </p>
+          <p>
+            <span class="font-black uppercase tracking-[0.18em] text-[#2d261f]">{copy.news.published}:</span>{' '}
+            {new Date(item.publishedTime).toLocaleString('en-US')}
+          </p>
+          {item.modifiedTime && (
+            <p>
+              <span class="font-black uppercase tracking-[0.18em] text-[#2d261f]">{copy.news.updated}:</span>{' '}
+              {new Date(item.modifiedTime).toLocaleString('en-US')}
+            </p>
+          )}
+          <p>
+            <span class="font-black uppercase tracking-[0.18em] text-[#2d261f]">{copy.news.tags}:</span> {item.tags.join(', ')}
+          </p>
+        </div>
+
+        {item.image && (
+          <div class="mt-5 overflow-hidden rounded-[1.25rem] border-2 border-[#4f4337]">
+            <img src={item.image} alt={item.imageAlt ?? item.title} class="h-auto w-full object-cover" />
+          </div>
+        )}
+      </aside>
+    </section>
+  </article>
+</Layout>

@@ -1,0 +1,114 @@
+---
+import Layout from '../../../../components/layout/Layout.astro';
+import {
+  NEWS_CATEGORIES,
+  getNewsCategoryPath,
+  getNewsItemsByCategory,
+  isExternalNewsItem,
+  type NewsCategory
+} from '../../../../lib/news';
+import {
+  buildLocalizedAlternates,
+  buildLocalizedPath,
+  getLocaleCodeFromPath,
+  getSiteCopy,
+  SUPPORTED_LOCALES
+} from '../../../../lib/i18n';
+
+export async function getStaticPaths() {
+  const paths: { params: { locale: string; category: string } }[] = [];
+  const localePaths = SUPPORTED_LOCALES.filter((locale) => locale !== 'en-US').map((locale) =>
+    locale === 'pt-BR' ? 'pt-br' : locale === 'zh-Hans' ? 'zh' : locale === 'it-IT' ? 'it' : 'es'
+  );
+
+  for (const locale of localePaths) {
+    for (const category of Object.keys(NEWS_CATEGORIES)) {
+      paths.push({ params: { locale, category } });
+    }
+  }
+
+  return paths;
+}
+
+const locale = getLocaleCodeFromPath(Astro.params.locale);
+const copy = getSiteCopy(locale);
+const categoryParam = Astro.params.category ?? '';
+const categoryKey = categoryParam as NewsCategory;
+const category = NEWS_CATEGORIES[categoryKey];
+const items = await getNewsItemsByCategory(categoryKey);
+---
+
+<Layout
+  title={`${copy.news.categories[categoryKey].title} - Breakdance 3D`}
+  description={copy.news.categories[categoryKey].description}
+  locale={locale}
+  pagePath={`/news/${categoryKey}`}
+  canonical={buildLocalizedPath(locale, getNewsCategoryPath(categoryKey))}
+  alternateLinks={buildLocalizedAlternates(`/news/${categoryKey}`)}
+  type="website"
+>
+  <div class="mx-auto flex w-full max-w-6xl flex-col gap-6">
+    <section class="street-panel rounded-[1.75rem] p-5 sm:p-7">
+      <p class="text-[10px] font-black uppercase tracking-[0.38em] text-[#756553]">{copy.news.categories[categoryKey].label}</p>
+      <h1 class="mt-3 text-4xl font-black uppercase leading-[0.92] tracking-[0.16em] text-[#2d261f] sm:text-6xl">
+        {copy.news.categories[categoryKey].title}
+      </h1>
+      <p class="mt-4 max-w-3xl text-sm leading-relaxed text-[#54483b] sm:text-base">{copy.news.categories[categoryKey].description}</p>
+    </section>
+
+    <section class="grid gap-4 lg:grid-cols-[1.1fr_0.9fr]">
+      <div class="street-panel rounded-[1.75rem] p-5 sm:p-7">
+        <div class="flex items-center justify-between gap-3">
+          <p class="text-[10px] font-black uppercase tracking-[0.3em] text-[#756553]">Archive</p>
+          <a href={buildLocalizedPath(locale, '/news')} class="text-[10px] font-black uppercase tracking-[0.26em] text-[#7c8f4c]">
+            Back to hub
+          </a>
+        </div>
+
+        <div class="mt-6 grid gap-4">
+          {items.length > 0 ? (
+            items.map((item) => (
+              <article class="rounded-[1.25rem] border-2 border-[#4f4337] bg-[#f6efe4] p-4 shadow-[0_8px_0_rgba(95,82,69,0.25)]">
+                <div class="flex flex-wrap items-center gap-2 text-[10px] font-black uppercase tracking-[0.24em]">
+                  <span class="street-chip rounded-full px-2.5 py-1" style={`background:${category.accent}22;color:${category.accent}`}>
+                    {copy.news.categories[categoryKey].label}
+                  </span>
+                  <span class="text-[#756553]">{new Date(item.publishedTime).toLocaleDateString('en-US')}</span>
+                  {isExternalNewsItem(item) && <span class="text-[#bc613a]">{item.sourceName}</span>}
+                </div>
+                <h2 class="mt-3 text-xl font-black uppercase tracking-[0.12em] text-[#2d261f]">{item.title}</h2>
+                <p class="mt-2 text-sm leading-relaxed text-[#54483b]">{item.excerpt}</p>
+                <div class="mt-4 flex flex-wrap items-center gap-3 text-[10px] font-black uppercase tracking-[0.24em]">
+                  <a
+                    href={buildLocalizedPath(locale, `/news/${item.category}/${item.slug}`)}
+                    class="street-button rounded-full px-3 py-1.5 text-[#2d251d] transition hover:bg-[#f4ebdf]"
+                  >
+                    Open
+                  </a>
+                  {isExternalNewsItem(item) && (
+                    <a href={item.sourceUrl} target="_blank" rel="noreferrer" class="text-[#bc613a] transition hover:text-[#9d4d2d]">
+                      Source
+                    </a>
+                  )}
+                </div>
+              </article>
+            ))
+          ) : (
+            <div class="rounded-[1.25rem] border border-[#6a5b4d] bg-[rgba(245,237,224,0.08)] p-4">
+              <p class="text-sm leading-relaxed text-[#54483b]">No content is available for this category right now.</p>
+            </div>
+          )}
+        </div>
+      </div>
+
+      <aside class="street-dark rounded-[1.75rem] p-5 sm:p-7">
+        <p class="text-[10px] font-black uppercase tracking-[0.38em] text-[#d9c9b1]">{copy.news.categoryRules}</p>
+        <div class="mt-4 space-y-4 text-sm leading-relaxed text-[#f8f1e7]">
+          {copy.news.rules[categoryKey].map((paragraph) => (
+            <p>{paragraph}</p>
+          ))}
+        </div>
+      </aside>
+    </section>
+  </div>
+</Layout>

@@ -1,0 +1,139 @@
+---
+import Layout from '../layout/Layout.astro';
+import SecondaryCTA from '../cta/SecondaryCTA.astro';
+import { buildLocalizedAlternates, buildLocalizedPath, getSiteCopy, type LocaleCode } from '../../lib/i18n';
+import { getRecentNewsItems } from '../../lib/news';
+import { getHomeCopy } from '../../lib/home';
+
+interface Props {
+  locale: LocaleCode;
+}
+
+const { locale } = Astro.props as Props;
+const copy = getHomeCopy(locale);
+const siteCopy = getSiteCopy(locale);
+const devlogs = (await getRecentNewsItems(8)).filter((item) => item.category === 'devlog').slice(0, 3);
+const manifestoHref = buildLocalizedPath(locale, '/manifesto');
+const discordHref = import.meta.env.PUBLIC_DISCORD_URL?.trim() ?? buildLocalizedPath(locale, '/contact');
+const githubHref =
+  import.meta.env.PUBLIC_GITHUB_URL?.trim() ??
+  (process.env.GITHUB_REPOSITORY ? `https://github.com/${process.env.GITHUB_REPOSITORY}` : buildLocalizedPath(locale, '/open-development'));
+const newsletterHref = import.meta.env.PUBLIC_NEWSLETTER_URL?.trim() ?? buildLocalizedPath(locale, '/contact');
+---
+
+<Layout
+  title={copy.seoTitle}
+  description={copy.seoDescription}
+  locale={locale}
+  pagePath="/"
+  canonical={buildLocalizedPath(locale, '/')}
+  alternateLinks={buildLocalizedAlternates('/')}
+>
+  <div class="mx-auto flex w-full max-w-6xl flex-col gap-6">
+    <section class="grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
+      <div class="street-panel flex h-full flex-col rounded-[1.75rem] p-5 sm:p-7">
+        <div class="flex flex-wrap items-center gap-2">
+          <span class="street-badge-passive rounded-full px-3 py-1 text-[10px] font-black uppercase tracking-[0.28em] text-[#5f5346]">
+            {copy.heroLabel}
+          </span>
+          <span class="text-[10px] font-black uppercase tracking-[0.28em] text-[#756553]" aria-hidden="true">·</span>
+          <span class="street-badge-passive rounded-full px-3 py-1 text-[10px] font-black uppercase tracking-[0.28em] text-[#5f5346]">
+            {siteCopy.news.eyebrow}
+          </span>
+        </div>
+
+        <div class="mt-6 flex flex-1 max-w-2xl flex-col justify-center">
+          <p class="text-[11px] font-black uppercase tracking-[0.4em] text-[#6a5b4d]">BboyArena</p>
+          <h1 class="mt-3 text-2xl font-black uppercase leading-[0.9] tracking-[0.16em] text-[#2d261f] sm:text-3xl">
+            {copy.heroTitle}
+          </h1>
+          <p class="mt-4 max-w-xl text-sm leading-relaxed text-[#4f4538] sm:text-base">
+            {copy.heroLead}
+          </p>
+        </div>
+
+        <div class="mt-auto flex flex-wrap gap-3 pt-6">
+          <a
+            href={manifestoHref}
+            class="street-button street-button-primary rounded-[1.25rem] px-6 py-3 text-center text-xs font-black uppercase tracking-[0.28em] transition hover:-translate-y-0.5"
+          >
+            {copy.manifestoCta}
+          </a>
+          <a
+            href={buildLocalizedPath(locale, '/news')}
+            class="street-link-secondary px-1 py-3 text-xs font-black uppercase tracking-[0.24em] transition"
+          >
+            {copy.archiveCta}<span aria-hidden="true">→</span>
+          </a>
+        </div>
+      </div>
+
+      <aside class="street-dark rounded-[1.75rem] p-5 sm:p-7">
+        <p class="text-[10px] font-black uppercase tracking-[0.38em] text-[#d9c9b1]">{copy.devlogsTitle}</p>
+        <p class="mt-3 max-w-xl text-sm leading-relaxed text-[#f8f1e7]">{copy.devlogsLead}</p>
+
+        <div class="mt-5 space-y-4">
+          {devlogs.length > 0 ? (
+            devlogs.map((item) => (
+              <article class="rounded-[1.25rem] border border-[#6a5b4d] bg-[rgba(245,237,224,0.08)] p-4">
+                <div class="flex flex-wrap items-center gap-2 text-[10px] font-black uppercase tracking-[0.24em]">
+                  <span class="street-badge-passive rounded-full border-[#d9e2bf]/30 bg-[rgba(163,185,90,0.12)] px-2.5 py-1 text-[#d9e2bf]">
+                    {siteCopy.news.categories.devlog.label}
+                  </span>
+                  <span class="text-[#e8ddc6]">{new Intl.DateTimeFormat(locale, { year: 'numeric', month: 'short', day: 'numeric' }).format(new Date(item.publishedTime))}</span>
+                </div>
+                <h2 class="mt-3 text-lg font-black uppercase tracking-[0.12em] text-[#f8f1e7]">{item.title}</h2>
+                <p class="mt-2 text-sm leading-relaxed text-[#f8f1e7]">{item.excerpt}</p>
+                <div class="mt-4 text-[10px] font-black uppercase tracking-[0.24em]">
+                  <a href={buildLocalizedPath(locale, `/news/${item.category}/${item.slug}`)} class="inline-flex items-center gap-1 text-[#d9e2bf] underline decoration-[#d9e2bf]/45 decoration-2 underline-offset-4 transition hover:text-white hover:decoration-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#d9e2bf]">
+                    {copy.devlogCardCta}<span aria-hidden="true">→</span>
+                  </a>
+                </div>
+              </article>
+            ))
+          ) : (
+            <div class="rounded-[1.25rem] border border-[#6a5b4d] bg-[rgba(245,237,224,0.08)] p-4">
+              <p class="text-sm leading-relaxed text-[#f8f1e7]">{copy.emptyDevlogs}</p>
+            </div>
+          )}
+        </div>
+      </aside>
+    </section>
+
+    <section class="grid gap-4 pt-0 lg:grid-cols-3 lg:pt-8 xl:pt-10">
+      <SecondaryCTA
+        label={copy.discordLabel}
+        title={copy.discordTitle}
+        description={copy.discordDescription}
+        cta={copy.discordCta}
+        href={discordHref}
+        icon="discord"
+        external={Boolean(import.meta.env.PUBLIC_DISCORD_URL?.trim())}
+        buttonPlacement="bottom"
+        buttonWidth="full"
+      />
+      <SecondaryCTA
+        label={copy.githubLabel}
+        title={copy.githubTitle}
+        description={copy.githubDescription}
+        cta={copy.githubCta}
+        href={githubHref}
+        icon="github"
+        external={!import.meta.env.PUBLIC_GITHUB_URL?.trim() && Boolean(process.env.GITHUB_REPOSITORY)}
+        buttonPlacement="bottom"
+        buttonWidth="full"
+      />
+      <SecondaryCTA
+        label={copy.newsletterLabel}
+        title={copy.newsletterTitle}
+        description={copy.newsletterDescription}
+        cta={copy.newsletterCta}
+        href={newsletterHref}
+        icon="newsletter"
+        external={Boolean(import.meta.env.PUBLIC_NEWSLETTER_URL?.trim())}
+        buttonPlacement="bottom"
+        buttonWidth="full"
+      />
+    </section>
+  </div>
+</Layout>

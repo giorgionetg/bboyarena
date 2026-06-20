@@ -1,0 +1,11 @@
+dist
+.astro
+node_modules
+.git
+.github
+.idea
+.DS_Store
+README.md
+readme_dev_notes.md
+server/colyseus/node_modules
+server/colyseus/dist

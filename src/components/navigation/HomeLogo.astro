@@ -1,0 +1,19 @@
+---
+import { buildLocalizedPath, type LocaleCode } from '../../lib/i18n';
+
+interface Props {
+  locale?: LocaleCode;
+  label?: string;
+}
+
+const { locale = 'en-US', label = 'BboyArena' } = Astro.props;
+---
+
+<a
+  href={buildLocalizedPath(locale, '/')}
+  class="group flex shrink-0 items-center transition hover:opacity-90"
+  aria-label={label}
+>
+  <img src="/logo-bboyarena.svg" alt="" class="h-16 w-auto object-contain sm:h-18" />
+  <span class="sr-only">{label}</span>
+</a>

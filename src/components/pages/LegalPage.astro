@@ -1,0 +1,83 @@
+---
+import Layout from '../layout/Layout.astro';
+import { buildLocalizedPath, type LocaleCode } from '../../lib/i18n';
+import { LEGAL_LAST_UPDATED, LEGAL_PATHS, getLegalPageCopy, type LegalPageKey } from '../../lib/legal';
+
+interface Props {
+  locale: LocaleCode;
+  pageKey: LegalPageKey;
+}
+
+const { locale, pageKey } = Astro.props as Props;
+const copy = getLegalPageCopy(pageKey);
+const pagePath = LEGAL_PATHS[pageKey];
+---
+
+<Layout
+  title={`${copy.title} | BBoyArena`}
+  description={copy.description}
+  locale={locale}
+  pagePath={pagePath}
+  canonical={buildLocalizedPath(locale, pagePath)}
+>
+  <article class="mx-auto w-full max-w-4xl">
+    <header class="street-panel rounded-[1.75rem] p-5 sm:p-7">
+      <p class="text-[10px] font-black uppercase tracking-[0.38em] text-[#756553]">BBoyArena / Legal</p>
+      <h1 class="mt-3 max-w-3xl text-3xl font-black uppercase leading-[0.92] tracking-[0.14em] text-[#2d261f] sm:text-5xl">
+        {copy.title}
+      </h1>
+      <p class="mt-4 max-w-3xl text-sm leading-relaxed text-[#54483b] sm:text-base">
+        {copy.intro}
+      </p>
+
+      <div class="mt-5 flex flex-wrap gap-2 text-[10px] font-black uppercase tracking-[0.28em] text-[#2d261f]">
+        <span class="street-chip rounded-full px-3 py-1">Last updated: {LEGAL_LAST_UPDATED}</span>
+        <span class="street-chip rounded-full px-3 py-1">Static site</span>
+      </div>
+    </header>
+
+    <div class="mt-6 space-y-4">
+      {copy.sections.map((section) => (
+        <section class="street-panel rounded-[1.5rem] p-5 sm:p-6">
+          <h2 class="text-lg font-black uppercase tracking-[0.14em] text-[#2d261f]">{section.title}</h2>
+
+          {section.paragraphs && (
+            <div class="mt-4 space-y-3 text-sm leading-relaxed text-[#54483b] sm:text-base">
+              {section.paragraphs.map((paragraph) => <p>{paragraph}</p>)}
+            </div>
+          )}
+
+          {section.list && (
+            <ul class="mt-4 list-disc space-y-2 pl-5 text-sm leading-relaxed text-[#54483b] sm:text-base">
+              {section.list.map((item) => <li>{item}</li>)}
+            </ul>
+          )}
+
+          {section.contacts && (
+            <dl class="mt-4 grid gap-3 sm:grid-cols-2">
+              {section.contacts.map((contact) => (
+                <div class="rounded-[1.15rem] border border-[#4f4337]/25 bg-[rgba(247,240,229,0.78)] p-4">
+                  <dt class="text-[10px] font-black uppercase tracking-[0.24em] text-[#756553]">{contact.label}</dt>
+                  <dd class="mt-2 text-sm font-bold leading-relaxed text-[#2d261f]">
+                    {contact.href ? (
+                      <a href={contact.href} class="break-words underline decoration-[#7f9246] decoration-2 underline-offset-4 transition hover:text-[#4f4337]">
+                        {contact.value}
+                      </a>
+                    ) : (
+                      <span>{contact.value}</span>
+                    )}
+                    {contact.note && <span class="mt-2 block text-sm font-normal text-[#54483b]">{contact.note}</span>}
+                  </dd>
+                </div>
+              ))}
+            </dl>
+          )}
+
+          {section.callout && (
+            <p class="mt-4 text-xs font-black uppercase tracking-[0.24em] text-[#7f9246]">{section.callout}</p>
+          )}
+        </section>
+      ))}
+    </div>
+  </article>
+</Layout>

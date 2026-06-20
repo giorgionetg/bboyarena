@@ -1,0 +1,231 @@
+services:
+  traefik:
+    image: traefik:v3.1
+    command:
+      - --api.dashboard=true
+      - --api.insecure=true
+      - --providers.docker=true
+      - --providers.docker.exposedbydefault=false
+      - --entrypoints.web.address=:80
+      - --entrypoints.websecure.address=:443
+      - --log.level=INFO
+    ports:
+      - "80:80"
+      - "443:443"
+      - "8080:8080"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    networks:
+      - proxy
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.traefik.rule=Host(`${TRAEFIK_DASHBOARD_HOST:-traefik.localhost}`)
+      - traefik.http.routers.traefik.entrypoints=web
+      - traefik.http.routers.traefik.service=api@internal
+
+  frontend:
+    profiles:
+      - frontend
+    build:
+      context: .
+    command: npm run dev -- --host 0.0.0.0 --port 4321
+    environment:
+      PUBLIC_SUPABASE_URL: ${PUBLIC_SUPABASE_URL:-http://supabase.localhost}
+      PUBLIC_SUPABASE_ANON_KEY: ${PUBLIC_SUPABASE_ANON_KEY:-change-me}
+      PUBLIC_SITE_URL: ${PUBLIC_SITE_URL:-http://game.localhost}
+      ASTRO_BASE_PATH: ${ASTRO_BASE_PATH:-/}
+    ports:
+      - "4321:4321"
+    networks:
+      - proxy
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.frontend.rule=Host(`${FRONTEND_HOST:-game.localhost}`)
+      - traefik.http.routers.frontend.entrypoints=web
+      - traefik.http.services.frontend.loadbalancer.server.port=4321
+
+  colyseus:
+    build:
+      context: ./server/colyseus
+    environment:
+      NODE_ENV: development
+      PORT: 2567
+      COLYSEUS_PUBLIC_URL: ${COLYSEUS_PUBLIC_URL:-ws://ws.localhost}
+    expose:
+      - "2567"
+    ports:
+      - "2567:2567"
+    networks:
+      - proxy
+      - internal
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.colyseus.rule=Host(`${COLYSEUS_HOST:-ws.localhost}`)
+      - traefik.http.routers.colyseus.entrypoints=web
+      - traefik.http.services.colyseus.loadbalancer.server.port=2567
+
+  supabase-db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+    volumes:
+      - supabase_db:/var/lib/postgresql/data
+    networks:
+      - internal
+
+  supabase-auth:
+    image: supabase/gotrue:latest
+    restart: unless-stopped
+    depends_on:
+      - supabase-db
+    environment:
+      GOTRUE_API_HOST: 0.0.0.0
+      GOTRUE_API_PORT: 9999
+      GOTRUE_DB_DRIVER: postgres
+      GOTRUE_DB_DATABASE_URL: postgres://postgres:${POSTGRES_PASSWORD:-postgres}@supabase-db:5432/postgres?sslmode=disable
+      GOTRUE_SITE_URL: ${PUBLIC_SITE_URL:-http://game.localhost}
+      GOTRUE_URI_ALLOW_LIST: "*"
+      GOTRUE_JWT_SECRET: ${JWT_SECRET:-change-me-change-me-change-me-change-me}
+      GOTRUE_EXTERNAL_EMAIL_ENABLED: "true"
+      GOTRUE_MAILER_AUTOCONFIRM: "true"
+      GOTRUE_DISABLE_SIGNUP: "false"
+    expose:
+      - "9999"
+    networks:
+      - internal
+
+  supabase-rest:
+    image: postgrest/postgrest:latest
+    restart: unless-stopped
+    depends_on:
+      - supabase-db
+    environment:
+      PGRST_DB_URI: postgres://postgres:${POSTGRES_PASSWORD:-postgres}@supabase-db:5432/postgres
+      PGRST_DB_SCHEMA: public,storage
+      PGRST_DB_ANON_ROLE: anon
+      PGRST_JWT_SECRET: ${JWT_SECRET:-change-me-change-me-change-me-change-me}
+      PGRST_SERVER_PORT: 3000
+    expose:
+      - "3000"
+    networks:
+      - internal
+
+  supabase-realtime:
+    image: supabase/realtime:latest
+    restart: unless-stopped
+    depends_on:
+      - supabase-db
+    environment:
+      PORT: 4000
+      DB_HOST: supabase-db
+      DB_PORT: 5432
+      DB_USER: postgres
+      DB_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      DB_NAME: postgres
+      DB_SSL: "false"
+      JWT_SECRET: ${JWT_SECRET:-change-me-change-me-change-me-change-me}
+    expose:
+      - "4000"
+    networks:
+      - internal
+
+  supabase-storage:
+    image: supabase/storage-api:latest
+    restart: unless-stopped
+    depends_on:
+      - supabase-db
+      - supabase-rest
+    environment:
+      ANON_KEY: ${SUPABASE_ANON_KEY:-change-me}
+      SERVICE_KEY: ${SUPABASE_SERVICE_ROLE_KEY:-change-me}
+      POSTGREST_URL: http://supabase-rest:3000
+      DATABASE_URL: postgres://postgres:${POSTGRES_PASSWORD:-postgres}@supabase-db:5432/postgres
+      JWT_SECRET: ${JWT_SECRET:-change-me-change-me-change-me-change-me}
+      REGION: local
+      GLOBAL_S3_BUCKET: storage
+      ENABLE_IMAGE_TRANSFORMATION: "true"
+    expose:
+      - "5000"
+    networks:
+      - internal
+
+  supabase-meta:
+    image: supabase/postgres-meta:latest
+    restart: unless-stopped
+    depends_on:
+      - supabase-db
+    environment:
+      PG_META_DB_HOST: supabase-db
+      PG_META_DB_PORT: 5432
+      PG_META_DB_NAME: postgres
+      PG_META_DB_USER: postgres
+      PG_META_DB_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      PG_META_PORT: 8080
+    expose:
+      - "8080"
+    networks:
+      - internal
+
+  supabase:
+    image: kong:3.7
+    restart: unless-stopped
+    depends_on:
+      - supabase-auth
+      - supabase-rest
+      - supabase-realtime
+      - supabase-storage
+    environment:
+      KONG_DATABASE: "off"
+      KONG_DECLARATIVE_CONFIG: /var/lib/kong/kong.yml
+      KONG_PROXY_LISTEN: 0.0.0.0:8000
+      KONG_ADMIN_LISTEN: 0.0.0.0:8001
+      KONG_LOG_LEVEL: notice
+    volumes:
+      - ./docker/supabase/kong.yml:/var/lib/kong/kong.yml:ro
+    expose:
+      - "8000"
+    networks:
+      - proxy
+      - internal
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.supabase.rule=Host(`${SUPABASE_HOST:-supabase.localhost}`)
+      - traefik.http.routers.supabase.entrypoints=web
+      - traefik.http.services.supabase.loadbalancer.server.port=8000
+
+  supabase-studio:
+    image: supabase/studio:latest
+    restart: unless-stopped
+    depends_on:
+      - supabase-db
+      - supabase
+    environment:
+      SUPABASE_URL: ${PUBLIC_SUPABASE_URL:-http://supabase.localhost}
+      SUPABASE_PUBLIC_URL: ${PUBLIC_SUPABASE_URL:-http://supabase.localhost}
+      SUPABASE_ANON_KEY: ${PUBLIC_SUPABASE_ANON_KEY:-change-me}
+      SUPABASE_SERVICE_KEY: ${SUPABASE_SERVICE_ROLE_KEY:-change-me}
+      STUDIO_PG_META_URL: http://supabase-meta:8080
+      STUDIO_DEFAULT_ORGANIZATION: Crew
+      STUDIO_DEFAULT_PROJECT: Breakdance 3D
+    expose:
+      - "3000"
+    networks:
+      - proxy
+      - internal
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.supabase-studio.rule=Host(`${SUPABASE_STUDIO_HOST:-studio.localhost}`)
+      - traefik.http.routers.supabase-studio.entrypoints=web
+      - traefik.http.services.supabase-studio.loadbalancer.server.port=3000
+
+networks:
+  proxy:
+  internal:
+
+volumes:
+  supabase_db:
