@@ -1,3 +1,5 @@
+import { withBasePath } from './base';
+
 export type NewsCategory = 'devlog' | 'app' | 'scene';
 
 export interface NewsCategoryMeta {
@@ -269,7 +271,7 @@ export const getNewsCategoryDescription = (category: NewsCategory) => NEWS_CATEG
 
 export const getNewsCategoryAccent = (category: NewsCategory) => NEWS_CATEGORIES[category].accent;
 
-export const getNewsCategoryPath = (category: NewsCategory) => `/news/${category}`;
+export const getNewsCategoryPath = (category: NewsCategory) => withBasePath(`/news/${category}`);
 
 export const isNewsCategory = (value: string): value is NewsCategory =>
   value === 'devlog' || value === 'app' || value === 'scene';

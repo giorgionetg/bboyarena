@@ -61,7 +61,7 @@ const sceneItems = recentItems.filter((item) => item.category === 'scene');
             <p class="text-[10px] font-black uppercase tracking-[0.3em] text-[#756553]">Latest drops</p>
             <h2 class="mt-2 text-2xl font-black uppercase tracking-[0.16em] text-[#2d261f]">Latest updates</h2>
           </div>
-          <a href="/news/devlog" class="text-[10px] font-black uppercase tracking-[0.26em] text-[#7c8f4c]">
+          <a href={buildLocalizedPath('en-US', '/news/devlog')} class="text-[10px] font-black uppercase tracking-[0.26em] text-[#7c8f4c]">
             Devlog archive
           </a>
         </div>

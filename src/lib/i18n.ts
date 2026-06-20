@@ -1,3 +1,5 @@
+import { getBasePath, withBasePath } from './base';
+
 export type LocaleCode = 'en-US' | 'it-IT' | 'es-419' | 'pt-BR' | 'zh-Hans';
 export type LocalePath = '' | 'it' | 'es' | 'pt-br' | 'zh';
 
@@ -47,10 +49,10 @@ export const buildLocalizedPath = (locale: LocaleCode, pathname = '/'): string =
   const base = getLocalePath(locale);
 
   if (!base) {
-    return normalized === '/' ? '/' : normalized.replace(/\/+$/, '');
+    return withBasePath(normalized === '/' ? '/' : normalized.replace(/\/+$/, ''));
   }
 
-  return normalized === '/' ? `/${base}` : `/${base}${normalized}`.replace(/\/+$/, '');
+  return withBasePath(normalized === '/' ? `/${base}` : `/${base}${normalized}`.replace(/\/+$/, ''));
 };
 
 export const buildLocalizedAlternates = (pathname = '/'): AlternateLink[] =>
@@ -60,8 +62,16 @@ export const buildLocalizedAlternates = (pathname = '/'): AlternateLink[] =>
   }));
 
 export const stripLocalePrefix = (pathname: string): string => {
+  const basePath = getBasePath();
   const normalized = pathname.replace(/\/+$/, '') || '/';
-  const segments = normalized.split('/').filter(Boolean);
+  const basePrefix = basePath === '/' ? '' : basePath.slice(0, -1);
+  const withoutBase =
+    basePrefix && normalized.startsWith(basePrefix)
+      ? normalized === basePrefix
+        ? '/'
+        : normalized.slice(basePrefix.length)
+      : normalized;
+  const segments = withoutBase.split('/').filter(Boolean);
   const first = segments[0] as Exclude<LocalePath, ''> | undefined;
 
   if (first && PATH_TO_CODE[first]) {
@@ -69,7 +79,7 @@ export const stripLocalePrefix = (pathname: string): string => {
     return remainder === '/' || remainder === '' ? '/' : remainder;
   }
 
-  return normalized === '' ? '/' : normalized;
+  return withoutBase === '' ? '/' : withoutBase;
 };
 
 export interface CategoryCopy {

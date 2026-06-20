@@ -1,3 +1,5 @@
+import { withBasePath } from './base';
+
 export type SeoPageType = 'website' | 'article';
 export type SeoTwitterCard = 'summary' | 'summary_large_image';
 
@@ -42,7 +44,8 @@ export const resolveUrl = (value: string | undefined, siteUrl: URL | undefined, 
       return new URL(value).href;
     }
 
-    return new URL(value, siteUrl ?? fallbackBase).href;
+    const resolvedValue = value.startsWith('/') ? withBasePath(value) : value;
+    return new URL(resolvedValue, siteUrl ?? fallbackBase).href;
   } catch {
     return value;
   }

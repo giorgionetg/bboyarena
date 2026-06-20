@@ -43,7 +43,7 @@ const items = await getNewsItemsByCategory(categoryKey);
       <div class="street-panel rounded-[1.75rem] p-5 sm:p-7">
         <div class="flex items-center justify-between gap-3">
           <p class="text-[10px] font-black uppercase tracking-[0.3em] text-[#756553]">Archive</p>
-          <a href="/news" class="text-[10px] font-black uppercase tracking-[0.26em] text-[#7c8f4c]">Back to hub</a>
+          <a href={buildLocalizedPath('en-US', '/news')} class="text-[10px] font-black uppercase tracking-[0.26em] text-[#7c8f4c]">Back to hub</a>
         </div>
 
         <div class="mt-6 grid gap-4">
@@ -66,7 +66,11 @@ const items = await getNewsItemsByCategory(categoryKey);
                 <p class="mt-2 text-sm leading-relaxed text-[#54483b]">{item.excerpt}</p>
                 <div class="mt-4 flex flex-wrap items-center gap-3 text-[10px] font-black uppercase tracking-[0.24em]">
                   <a
-                    href={isExternalNewsItem(item) ? `/news/scene/${item.slug}` : `${getNewsCategoryPath(item.category)}/${item.slug}`}
+                    href={
+                      isExternalNewsItem(item)
+                        ? buildLocalizedPath('en-US', `/news/scene/${item.slug}`)
+                        : `${getNewsCategoryPath(item.category)}/${item.slug}`
+                    }
                     class="street-button rounded-full px-3 py-1.5 text-[#2d251d] transition hover:bg-[#f4ebdf]"
                   >
                     Open
