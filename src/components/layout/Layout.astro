@@ -135,17 +135,6 @@ const registerServiceWorkerTag = pwaInfo?.registerSW?.scriptTag;
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="icon" type="image/png" href={withBasePath('/icon.png')} />
-    <link rel="icon" type="image/svg+xml" href={withBasePath('/favicon.svg')} />
-    <link rel="icon" type="image/png" sizes="192x192" href={withBasePath('/android-chrome-192x192.png')} />
-    <link rel="icon" type="image/png" sizes="512x512" href={withBasePath('/android-chrome-512x512.png')} />
-    <link rel="apple-touch-icon" sizes="180x180" href={withBasePath('/apple-touch-icon.png')} />
-    <meta name="mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-    <meta name="apple-mobile-web-app-title" content={siteName} />
-    <meta name="bboyarena-app-version" content={appVersion} />
-    <meta name="msapplication-navbutton-color" content={chromeColor} />
     {officialOrigin && (
       <script is:inline define:vars={{ officialOrigin, legacyProjectBase }}>
         {`
@@ -154,7 +143,6 @@ const registerServiceWorkerTag = pwaInfo?.registerSW?.scriptTag;
             const isGithubPagesHost = hostname === 'github.io' || hostname.endsWith('.github.io');
             if (!isGithubPagesHost) return;
 
-            const redirectDelayMs = 900;
             const pathname = window.location.pathname;
             let nextPath = pathname;
 
@@ -168,51 +156,76 @@ const registerServiceWorkerTag = pwaInfo?.registerSW?.scriptTag;
 
             const target = new URL(nextPath + window.location.search + window.location.hash, officialOrigin);
 
-            const showRedirectNotice = () => {
-              if (document.getElementById('official-site-redirect')) return;
+            const overlay = document.createElement('div');
+            overlay.id = 'official-site-redirect';
+            overlay.setAttribute('role', 'status');
+            overlay.setAttribute('aria-live', 'polite');
+            overlay.style.cssText = [
+              'position:fixed',
+              'inset:0',
+              'z-index:9999',
+              'display:flex',
+              'align-items:center',
+              'justify-content:center',
+              'padding:1rem',
+              'background:rgba(234,224,208,0.98)',
+              'color:#241f18',
+              'font-family:Arial, Helvetica, sans-serif',
+              'text-align:center'
+            ].join(';');
 
-              const overlay = document.createElement('div');
-              overlay.id = 'official-site-redirect';
-              overlay.setAttribute('role', 'status');
-              overlay.setAttribute('aria-live', 'polite');
-              overlay.style.cssText = [
-                'position:fixed',
-                'inset:0',
-                'z-index:9999',
-                'display:flex',
-                'align-items:center',
-                'justify-content:center',
-                'padding:1rem',
-                'background:rgba(234,224,208,0.98)',
-                'color:#241f18',
-                'font-family:Arial, Helvetica, sans-serif',
-                'text-align:center'
-              ].join(';');
+            overlay.innerHTML = `
+              <div style="max-width:22rem;border:2px solid #4f4337;border-radius:1.25rem;background:#f4ebdf;padding:1rem 1.1rem;box-shadow:0 12px 0 rgba(95,82,69,0.22)">
+                <div style="font-size:0.7rem;font-weight:900;letter-spacing:0.28em;text-transform:uppercase;color:#756553;margin-bottom:0.65rem">Redirecting</div>
+                <div style="font-size:1rem;font-weight:700;line-height:1.5">Taking you to the official site...</div>
+                <div style="margin-top:0.5rem;font-size:0.8rem;line-height:1.5;color:#5f5346">If the redirect takes a moment, the browser is moving you to the canonical BboyArena domain.</div>
+              </div>
+            `;
 
-              overlay.innerHTML = `
-                <div style="max-width:22rem;border:2px solid #4f4337;border-radius:1.25rem;background:#f4ebdf;padding:1rem 1.1rem;box-shadow:0 12px 0 rgba(95,82,69,0.22)">
-                  <div style="font-size:0.7rem;font-weight:900;letter-spacing:0.28em;text-transform:uppercase;color:#756553;margin-bottom:0.65rem">Redirecting</div>
-                  <div style="font-size:1rem;font-weight:700;line-height:1.5">Taking you to the official site...</div>
-                  <div style="margin-top:0.5rem;font-size:0.8rem;line-height:1.5;color:#5f5346">If the redirect takes a moment, the browser is moving you to the canonical BboyArena domain.</div>
-                </div>
-              `;
+            const run = async () => {
+              try {
+                document.documentElement.appendChild(overlay);
+              } catch {
+                // Ignore DOM insertion failures and continue with the redirect.
+              }
 
-              document.body.appendChild(overlay);
+              try {
+                if ('serviceWorker' in navigator) {
+                  const registrations = await navigator.serviceWorker.getRegistrations();
+                  await Promise.all(registrations.map((registration) => registration.unregister()));
+                }
+              } catch {
+                // Ignore cleanup failures and continue with the redirect.
+              }
+
+              try {
+                if ('caches' in window) {
+                  const cacheKeys = await caches.keys();
+                  await Promise.all(cacheKeys.map((key) => caches.delete(key)));
+                }
+              } catch {
+                // Ignore cache cleanup failures and continue with the redirect.
+              }
+
+              window.location.replace(target.toString());
             };
 
-            if (document.readyState === 'loading') {
-              document.addEventListener('DOMContentLoaded', showRedirectNotice, { once: true });
-            } else {
-              showRedirectNotice();
-            }
-
-            window.setTimeout(() => {
-              window.location.replace(target.toString());
-            }, redirectDelayMs);
+            void run();
           })();
         `}
       </script>
     )}
+    <link rel="icon" type="image/png" href={withBasePath('/icon.png')} />
+    <link rel="icon" type="image/svg+xml" href={withBasePath('/favicon.svg')} />
+    <link rel="icon" type="image/png" sizes="192x192" href={withBasePath('/android-chrome-192x192.png')} />
+    <link rel="icon" type="image/png" sizes="512x512" href={withBasePath('/android-chrome-512x512.png')} />
+    <link rel="apple-touch-icon" sizes="180x180" href={withBasePath('/apple-touch-icon.png')} />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content={siteName} />
+    <meta name="bboyarena-app-version" content={appVersion} />
+    <meta name="msapplication-navbutton-color" content={chromeColor} />
     <Fragment set:html={manifestLinkTag} />
     <link rel="canonical" href={seo.canonicalUrl} />
     {resolvedAlternates.map((link) => (
