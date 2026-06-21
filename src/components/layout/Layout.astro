@@ -52,6 +52,9 @@ const defaultTwitterSite = import.meta.env.PUBLIC_SEO_TWITTER_SITE;
 const defaultTwitterCreator = import.meta.env.PUBLIC_SEO_TWITTER_CREATOR;
 const defaultAuthor = import.meta.env.PUBLIC_SEO_AUTHOR ?? defaultSiteName;
 const chromeColor = '#eae0d0';
+const repoName = process.env.GITHUB_REPOSITORY?.split('/')[1] ?? '';
+const officialOrigin = site?.origin ?? '';
+const legacyProjectBase = repoName ? `/${repoName}` : '';
 
 const { 
   title = defaultSeoTitle, 
@@ -143,6 +146,73 @@ const registerServiceWorkerTag = pwaInfo?.registerSW?.scriptTag;
     <meta name="apple-mobile-web-app-title" content={siteName} />
     <meta name="bboyarena-app-version" content={appVersion} />
     <meta name="msapplication-navbutton-color" content={chromeColor} />
+    {officialOrigin && (
+      <script is:inline define:vars={{ officialOrigin, legacyProjectBase }}>
+        {`
+          (() => {
+            const hostname = window.location.hostname;
+            const isGithubPagesHost = hostname === 'github.io' || hostname.endsWith('.github.io');
+            if (!isGithubPagesHost) return;
+
+            const redirectDelayMs = 900;
+            const pathname = window.location.pathname;
+            let nextPath = pathname;
+
+            if (legacyProjectBase && (pathname === legacyProjectBase || pathname.startsWith(`${legacyProjectBase}/`))) {
+              nextPath = pathname.slice(legacyProjectBase.length) || '/';
+            }
+
+            if (!nextPath.startsWith('/')) {
+              nextPath = `/${nextPath}`;
+            }
+
+            const target = new URL(nextPath + window.location.search + window.location.hash, officialOrigin);
+
+            const showRedirectNotice = () => {
+              if (document.getElementById('official-site-redirect')) return;
+
+              const overlay = document.createElement('div');
+              overlay.id = 'official-site-redirect';
+              overlay.setAttribute('role', 'status');
+              overlay.setAttribute('aria-live', 'polite');
+              overlay.style.cssText = [
+                'position:fixed',
+                'inset:0',
+                'z-index:9999',
+                'display:flex',
+                'align-items:center',
+                'justify-content:center',
+                'padding:1rem',
+                'background:rgba(234,224,208,0.98)',
+                'color:#241f18',
+                'font-family:Arial, Helvetica, sans-serif',
+                'text-align:center'
+              ].join(';');
+
+              overlay.innerHTML = `
+                <div style="max-width:22rem;border:2px solid #4f4337;border-radius:1.25rem;background:#f4ebdf;padding:1rem 1.1rem;box-shadow:0 12px 0 rgba(95,82,69,0.22)">
+                  <div style="font-size:0.7rem;font-weight:900;letter-spacing:0.28em;text-transform:uppercase;color:#756553;margin-bottom:0.65rem">Redirecting</div>
+                  <div style="font-size:1rem;font-weight:700;line-height:1.5">Taking you to the official site...</div>
+                  <div style="margin-top:0.5rem;font-size:0.8rem;line-height:1.5;color:#5f5346">If the redirect takes a moment, the browser is moving you to the canonical BboyArena domain.</div>
+                </div>
+              `;
+
+              document.body.appendChild(overlay);
+            };
+
+            if (document.readyState === 'loading') {
+              document.addEventListener('DOMContentLoaded', showRedirectNotice, { once: true });
+            } else {
+              showRedirectNotice();
+            }
+
+            window.setTimeout(() => {
+              window.location.replace(target.toString());
+            }, redirectDelayMs);
+          })();
+        `}
+      </script>
+    )}
     <Fragment set:html={manifestLinkTag} />
     <link rel="canonical" href={seo.canonicalUrl} />
     {resolvedAlternates.map((link) => (
