@@ -4,7 +4,7 @@ interface Props {
   title: string;
   description: string;
   cta: string;
-  href: string;
+  href?: string;
   icon: 'discord' | 'github' | 'newsletter';
   external?: boolean;
   buttonPlacement?: 'inline' | 'bottom';
@@ -70,14 +70,24 @@ const buttonWidthClass = buttonWidth === 'full' ? 'w-full' : 'w-auto';
         </div>
 
         <div class={isBottom ? 'mt-1' : 'shrink-0'}>
-          <a
-            href={href}
-            class={`street-button street-button-secondary ${buttonWidthClass} inline-flex min-h-11 shrink-0 items-center justify-center whitespace-nowrap rounded-[1.25rem] px-4 py-2 text-[10px] font-black uppercase tracking-[0.24em] transition hover:-translate-y-0.5`}
-            target={external ? '_blank' : undefined}
-            rel={external ? 'noreferrer noopener' : undefined}
-          >
-            {cta}
-          </a>
+          {href ? (
+            <a
+              href={href}
+              class={`street-button street-button-secondary ${buttonWidthClass} inline-flex min-h-11 shrink-0 items-center justify-center whitespace-nowrap rounded-[1.25rem] px-4 py-2 text-[10px] font-black uppercase tracking-[0.24em] transition hover:-translate-y-0.5`}
+              target={external ? '_blank' : undefined}
+              rel={external ? 'noreferrer noopener' : undefined}
+            >
+              {cta}
+            </a>
+          ) : (
+            <span
+              class={`street-button street-button-secondary ${buttonWidthClass} inline-flex min-h-11 shrink-0 items-center justify-center whitespace-nowrap rounded-[1.25rem] px-4 py-2 text-[10px] font-black uppercase tracking-[0.24em] opacity-50`}
+              aria-disabled="true"
+              title="Discord link not configured"
+            >
+              {cta}
+            </span>
+          )}
         </div>
       </div>
     </div>

@@ -14,7 +14,7 @@ const copy = getHomeCopy(locale);
 const siteCopy = getSiteCopy(locale);
 const devlogs = (await getRecentNewsItems(8)).filter((item) => item.category === 'devlog').slice(0, 3);
 const manifestoHref = buildLocalizedPath(locale, '/manifesto');
-const discordHref = import.meta.env.PUBLIC_DISCORD_URL?.trim() ?? buildLocalizedPath(locale, '/contact');
+const discordHref = import.meta.env.PUBLIC_DISCORD_URL?.trim();
 const githubHref =
   import.meta.env.PUBLIC_GITHUB_URL?.trim() ??
   (process.env.GITHUB_REPOSITORY ? `https://github.com/${process.env.GITHUB_REPOSITORY}` : buildLocalizedPath(locale, '/open-development'));
@@ -106,9 +106,9 @@ const newsletterHref = import.meta.env.PUBLIC_NEWSLETTER_URL?.trim() ?? buildLoc
         title={copy.discordTitle}
         description={copy.discordDescription}
         cta={copy.discordCta}
-        href={discordHref}
+        href={discordHref ?? ''}
         icon="discord"
-        external={Boolean(import.meta.env.PUBLIC_DISCORD_URL?.trim())}
+        external={Boolean(discordHref)}
         buttonPlacement="bottom"
         buttonWidth="full"
       />
