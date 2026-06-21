@@ -14,6 +14,7 @@ const seoTitle = process.env.PUBLIC_SEO_TITLE ?? seoSiteName;
 const seoDescription =
   process.env.PUBLIC_SEO_DESCRIPTION ??
   'BboyArena.org is an independent, community-driven project about breaking culture, creative movement, and experimental game development, built with open development and privacy-friendly design.';
+const chromeColor = '#eae0d0';
 
 // https://astro.build/config
 export default defineConfig({
@@ -47,8 +48,8 @@ export default defineConfig({
         name: seoSiteName,
         short_name: seoTitle,
         description: seoDescription,
-        theme_color: '#8f8371',
-        background_color: '#d4c7b3',
+        theme_color: chromeColor,
+        background_color: chromeColor,
         display: 'standalone',
         start_url: base,
         scope: base,
