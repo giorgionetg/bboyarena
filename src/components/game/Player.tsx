@@ -1,6 +1,6 @@
 import { useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
-import { useGameStore } from './state/useGameStore';
+import { useGameStore } from '../../game/state/useGameStore';
 import * as THREE from 'three';
 
 interface PlayerProps {

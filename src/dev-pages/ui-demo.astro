@@ -1,0 +1,674 @@
+---
+const surfaceCards = [
+  {
+    title: 'Dark panel',
+    note: 'For main menu shells, HUD blocks, and high-contrast containers.',
+    tone: 'dark'
+  },
+  {
+    title: 'Light panel',
+    note: 'For readable content cards, guides, and documentation blocks.',
+    tone: 'light'
+  },
+  {
+    title: 'Soft panel',
+    note: 'For secondary surfaces, overlays, and compact widgets.',
+    tone: 'soft'
+  },
+  {
+    title: 'Warm panel',
+    note: 'For emphasis, callouts, and arcade-style highlights.',
+    tone: 'warm'
+  }
+] as const;
+
+const spacingCards = [
+  {
+    label: 'Section rhythm',
+    value: 'gap-6',
+    description: 'Use this distance between big blocks, like menu + atlas + notes.'
+  },
+  {
+    label: 'Card rhythm',
+    value: 'space-y-4',
+    description: 'Use this inside a card when title, copy, and actions stack vertically.'
+  },
+  {
+    label: 'Surface padding',
+    value: 'p-5 / p-6',
+    description: 'Keep internal padding obvious so surfaces never feel glued together.'
+  },
+  {
+    label: 'Edge breathing',
+    value: 'px-4 py-6',
+    description: 'Keep the outer frame calm and allow the stage to breathe on mobile.'
+  }
+] as const;
+
+const buttonCards = [
+  { label: 'Primary action', tone: 'primary', note: 'Strong CTA' },
+  { label: 'Secondary action', tone: 'secondary', note: 'Safer action' },
+  { label: 'Warm action', tone: 'warm', note: 'Highlighted action' },
+  { label: 'Ghost action', tone: 'ghost', note: 'Low emphasis' }
+] as const;
+---
+
+<div class="ui-demo-root">
+  <div class="ui-demo-shell">
+    <div class="ui-demo-stage" aria-label="UI demo atlas">
+      <div class="ui-demo-pill">Scene selector / UI demo</div>
+
+      <section class="ui-demo-hero">
+        <div class="ui-demo-hero-copy">
+          <p class="ui-demo-kicker">2D atlas / game-like spacing</p>
+          <h1>Demo space for layout, spacing, and surfaces</h1>
+          <p>
+            This page is a visual test bench for the 2D layer. It stays closer to the in-game menu language so
+            padding, margin, rhythm, and hierarchy are tested in the same atmosphere as the play screen.
+          </p>
+
+          <div class="ui-demo-chips" aria-label="Atlas tags">
+            <span>Tailwind v4</span>
+            <span>Game panels</span>
+            <span>Spacing first</span>
+            <span>No crowding</span>
+          </div>
+        </div>
+
+        <div class="ui-demo-hero-side">
+          <div class="ui-demo-stat">
+            <p>Menu shell</p>
+            <strong>Illustrated lobby</strong>
+            <span>Same visual climate as the game menu.</span>
+          </div>
+          <div class="ui-demo-stat ui-demo-stat--warm">
+            <p>Primary rule</p>
+            <strong>Use gaps first</strong>
+            <span>Spacing should be obvious before decoration.</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="ui-demo-panel ui-demo-panel--hero">
+        <div class="ui-demo-panel__header">
+          <div>
+            <p class="ui-demo-label">Hero shell</p>
+            <h2>Build the whole UI from repeatable blocks.</h2>
+          </div>
+          <div class="ui-demo-badge-row" aria-label="Demo badges">
+            <span>main menu</span>
+            <span>HUD rhythm</span>
+            <span>cards + controls</span>
+          </div>
+        </div>
+
+        <p class="ui-demo-copy">
+          The page below mirrors the game shell: a strong outer frame, a clear stage, then inner cards and controls.
+          It is meant to be dense enough to feel like a browser game, but still readable.
+        </p>
+
+        <div class="ui-demo-actions">
+          <button type="button" class="ui-demo-button ui-demo-button--primary">Primary action</button>
+          <button type="button" class="ui-demo-button ui-demo-button--secondary">Secondary action</button>
+          <button type="button" class="ui-demo-button ui-demo-button--warm">Warm action</button>
+          <button type="button" class="ui-demo-button ui-demo-button--ghost">Ghost action</button>
+        </div>
+      </section>
+
+      <section class="ui-demo-grid">
+        <div class="ui-demo-column">
+          {surfaceCards.map((surface) => (
+            <article class={`ui-demo-surface ui-demo-surface--${surface.tone}`}>
+              <p class="ui-demo-label">Surface</p>
+              <h3>{surface.title}</h3>
+              <p>{surface.note}</p>
+            </article>
+          ))}
+        </div>
+
+        <div class="ui-demo-column ui-demo-column--stack">
+          <article class="ui-demo-panel ui-demo-panel--dark">
+            <p class="ui-demo-label">Spacing map</p>
+            <div class="ui-demo-space-list">
+              {spacingCards.map((item) => (
+                <div class="ui-demo-space-card">
+                  <div class="ui-demo-space-card__top">
+                    <span>{item.label}</span>
+                    <strong>{item.value}</strong>
+                  </div>
+                  <p>{item.description}</p>
+                </div>
+              ))}
+            </div>
+          </article>
+
+          <article class="ui-demo-panel ui-demo-panel--soft">
+            <p class="ui-demo-label">Button gallery</p>
+            <div class="ui-demo-button-grid">
+              {buttonCards.map((button) => (
+                <div class="ui-demo-button-card">
+                  <p class="ui-demo-button-card__note">{button.note}</p>
+                  <button type="button" class={`ui-demo-button ui-demo-button--${button.tone}`}>
+                    {button.label}
+                  </button>
+                </div>
+              ))}
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="ui-demo-footer-grid">
+        <article class="ui-demo-note">
+          <p class="ui-demo-label">Do</p>
+          <ul>
+            <li>Use `gap-*` to separate major blocks.</li>
+            <li>Use `space-y-*` inside stacked cards.</li>
+            <li>Keep one clear CTA per surface.</li>
+          </ul>
+        </article>
+        <article class="ui-demo-note">
+          <p class="ui-demo-label">Avoid</p>
+          <ul>
+            <li>Stacking cards without internal padding.</li>
+            <li>Mixing too many border radii in one screen.</li>
+            <li>Using margins as the primary layout system.</li>
+          </ul>
+        </article>
+        <article class="ui-demo-note">
+          <p class="ui-demo-label">Next step</p>
+          <p>
+            If the structure works here, copy the same spacing recipe into new game screens and keep the visual rhythm
+            stable before adding more decoration.
+          </p>
+        </article>
+      </section>
+    </div>
+  </div>
+</div>
+
+<style>
+  .ui-demo-root {
+    --demo-gap-1: 0.25rem;
+    --demo-gap-2: 0.5rem;
+    --demo-gap-3: 0.75rem;
+    --demo-gap-4: 1rem;
+    --demo-gap-5: 1.25rem;
+    --demo-gap-6: 1.5rem;
+    --demo-gap-8: 2rem;
+    --demo-paper: rgba(248, 241, 230, 0.96);
+    --demo-paper-soft: rgba(241, 233, 219, 0.92);
+    --demo-dark: rgba(10, 10, 12, 0.94);
+    --demo-dark-2: rgba(17, 17, 20, 0.9);
+    --demo-border: rgba(255, 255, 255, 0.12);
+    --demo-border-dark: rgba(77, 67, 55, 0.9);
+    --demo-shadow: 0 16px 0 rgba(0, 0, 0, 0.48), 0 28px 70px rgba(0, 0, 0, 0.44);
+    --demo-shadow-soft: 0 12px 0 rgba(0, 0, 0, 0.36), 0 18px 40px rgba(0, 0, 0, 0.28);
+    --demo-text: #f7f1e6;
+    --demo-text-dark: #2d261f;
+    --demo-text-muted: rgba(247, 241, 230, 0.72);
+    --demo-lime: #d6e59a;
+    --demo-warm: #f4be24;
+    --demo-orange: #c56a41;
+    min-height: 100vh;
+    display: block;
+    color: var(--demo-text);
+    background:
+      radial-gradient(circle at 50% 10%, rgba(255, 210, 120, 0.12), transparent 24%),
+      linear-gradient(180deg, #050505 0%, #070707 52%, #040404 100%);
+  }
+
+  .ui-demo-shell {
+    min-height: 100vh;
+    padding: clamp(0.75rem, 2vw, 1.4rem);
+    background:
+      radial-gradient(circle at 50% 16%, rgba(159, 181, 95, 0.16), transparent 28%),
+      radial-gradient(circle at 50% 82%, rgba(197, 106, 65, 0.12), transparent 22%),
+      linear-gradient(180deg, rgba(5, 5, 5, 0.98), rgba(0, 0, 0, 0.98));
+  }
+
+  .ui-demo-stage {
+    position: relative;
+    width: min(100%, 88rem);
+    margin: 0 auto;
+    padding: clamp(1rem, 2.3vw, 1.5rem);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background:
+      radial-gradient(circle at 62% 42%, rgba(255, 214, 137, 0.22), transparent 18%),
+      linear-gradient(180deg, rgba(17, 17, 20, 0.96), rgba(8, 8, 10, 0.98));
+    box-shadow: 0 24px 80px rgba(0, 0, 0, 0.58);
+    overflow: hidden;
+  }
+
+  .ui-demo-stage::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background:
+      linear-gradient(180deg, rgba(255, 255, 255, 0.04), transparent 12%),
+      radial-gradient(circle at 50% 50%, transparent 42%, rgba(0, 0, 0, 0.34) 100%);
+    opacity: 0.85;
+  }
+
+  .ui-demo-pill {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    z-index: 2;
+    padding: 0.65rem 0.95rem;
+    border: 2px solid rgba(255, 255, 255, 0.14);
+    background: rgba(10, 10, 12, 0.8);
+    color: var(--demo-text);
+    font-size: 0.65rem;
+    font-weight: 900;
+    letter-spacing: 0.34em;
+    line-height: 1;
+    text-transform: uppercase;
+    box-shadow: 0 8px 0 rgba(0, 0, 0, 0.42);
+  }
+
+  .ui-demo-hero,
+  .ui-demo-grid,
+  .ui-demo-footer-grid {
+    position: relative;
+    z-index: 1;
+  }
+
+  .ui-demo-hero {
+    display: grid;
+    grid-template-columns: minmax(0, 1.2fr) minmax(16rem, 0.8fr);
+    gap: var(--demo-gap-6);
+    align-items: end;
+    margin-top: 2.8rem;
+    padding: 0.25rem 0 1rem;
+  }
+
+  .ui-demo-hero-copy {
+    max-width: 54rem;
+  }
+
+  .ui-demo-kicker,
+  .ui-demo-label {
+    margin: 0;
+    font-size: 0.65rem;
+    font-weight: 900;
+    letter-spacing: 0.38em;
+    line-height: 1.4;
+    text-transform: uppercase;
+  }
+
+  .ui-demo-kicker {
+    color: rgba(214, 229, 154, 0.92);
+  }
+
+  .ui-demo-hero h1 {
+    margin: 0.6rem 0 0;
+    font-size: clamp(2.2rem, 4.6vw, 4.8rem);
+    font-weight: 900;
+    letter-spacing: 0.14em;
+    line-height: 0.94;
+    text-transform: uppercase;
+    color: #f7f1e6;
+  }
+
+  .ui-demo-hero p,
+  .ui-demo-copy,
+  .ui-demo-surface p,
+  .ui-demo-space-card p,
+  .ui-demo-note p,
+  .ui-demo-note li {
+    margin: 0;
+    font-size: 0.92rem;
+    line-height: 1.65;
+    color: rgba(247, 241, 230, 0.8);
+  }
+
+  .ui-demo-hero > .ui-demo-hero-copy > p {
+    max-width: 42rem;
+    margin-top: var(--demo-gap-4);
+  }
+
+  .ui-demo-chips,
+  .ui-demo-badge-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--demo-gap-2);
+  }
+
+  .ui-demo-chips {
+    margin-top: var(--demo-gap-5);
+  }
+
+  .ui-demo-chips span,
+  .ui-demo-badge-row span {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    background: rgba(255, 255, 255, 0.06);
+    color: rgba(247, 241, 230, 0.88);
+    padding: 0.45rem 0.75rem;
+    font-size: 0.68rem;
+    font-weight: 900;
+    letter-spacing: 0.26em;
+    line-height: 1;
+    text-transform: uppercase;
+  }
+
+  .ui-demo-hero-side {
+    display: grid;
+    gap: var(--demo-gap-3);
+  }
+
+  .ui-demo-stat {
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(8, 8, 10, 0.88);
+    padding: 1rem;
+    box-shadow: var(--demo-shadow-soft);
+  }
+
+  .ui-demo-stat--warm {
+    background: linear-gradient(180deg, rgba(244, 190, 36, 0.96), rgba(216, 148, 7, 0.94));
+    color: #1a1205;
+  }
+
+  .ui-demo-stat p {
+    color: inherit;
+    opacity: 0.7;
+  }
+
+  .ui-demo-stat strong {
+    display: block;
+    margin-top: 0.5rem;
+    font-size: 1rem;
+    font-weight: 900;
+    letter-spacing: 0.16em;
+    line-height: 1;
+    text-transform: uppercase;
+  }
+
+  .ui-demo-stat span {
+    display: block;
+    margin-top: 0.55rem;
+    font-size: 0.82rem;
+    line-height: 1.55;
+  }
+
+  .ui-demo-panel,
+  .ui-demo-surface,
+  .ui-demo-note {
+    position: relative;
+    border: 2px solid var(--demo-border);
+    box-shadow: var(--demo-shadow-soft);
+  }
+
+  .ui-demo-panel {
+    padding: 1.15rem;
+  }
+
+  .ui-demo-panel--hero {
+    margin-top: var(--demo-gap-6);
+    background: linear-gradient(180deg, rgba(15, 15, 18, 0.95), rgba(7, 7, 8, 0.97));
+  }
+
+  .ui-demo-panel--dark {
+    background: linear-gradient(180deg, rgba(15, 15, 18, 0.95), rgba(8, 8, 10, 0.97));
+  }
+
+  .ui-demo-panel--soft {
+    background: linear-gradient(180deg, rgba(18, 18, 22, 0.8), rgba(10, 10, 12, 0.88));
+  }
+
+  .ui-demo-panel__header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: var(--demo-gap-4);
+  }
+
+  .ui-demo-panel h2 {
+    margin: 0.35rem 0 0;
+    font-size: clamp(1.2rem, 2vw, 1.75rem);
+    font-weight: 900;
+    letter-spacing: 0.14em;
+    line-height: 0.98;
+    text-transform: uppercase;
+  }
+
+  .ui-demo-copy {
+    max-width: 54rem;
+    margin-top: var(--demo-gap-4);
+    color: rgba(247, 241, 230, 0.82);
+  }
+
+  .ui-demo-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--demo-gap-3);
+    margin-top: var(--demo-gap-5);
+  }
+
+  .ui-demo-button {
+    appearance: none;
+    border: 2px solid transparent;
+    border-radius: 0;
+    min-height: 3rem;
+    padding: 0.75rem 1rem;
+    font: inherit;
+    font-size: 0.72rem;
+    font-weight: 900;
+    letter-spacing: 0.28em;
+    line-height: 1;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: transform 160ms ease, box-shadow 160ms ease, background-color 160ms ease, color 160ms ease;
+  }
+
+  .ui-demo-button:hover {
+    transform: translateY(-1px);
+  }
+
+  .ui-demo-button:active {
+    transform: translateY(1px);
+  }
+
+  .ui-demo-button--primary,
+  .ui-demo-button--warm {
+    background: linear-gradient(180deg, #f4be24, #d89407);
+    color: #16120d;
+    box-shadow: 0 7px 0 rgba(95, 59, 0, 0.7);
+  }
+
+  .ui-demo-button--secondary {
+    background: linear-gradient(180deg, rgba(247, 241, 231, 0.98), rgba(231, 220, 204, 0.96));
+    color: var(--demo-text-dark);
+    border-color: var(--demo-border-dark);
+    box-shadow: 0 6px 0 rgba(77, 67, 55, 0.68);
+  }
+
+  .ui-demo-button--ghost {
+    background: rgba(255, 255, 255, 0.06);
+    color: rgba(247, 241, 230, 0.92);
+    border-color: rgba(255, 255, 255, 0.12);
+    box-shadow: 0 5px 0 rgba(0, 0, 0, 0.35);
+  }
+
+  .ui-demo-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: var(--demo-gap-6);
+    margin-top: var(--demo-gap-6);
+  }
+
+  .ui-demo-column {
+    display: grid;
+    gap: var(--demo-gap-4);
+  }
+
+  .ui-demo-column--stack {
+    align-content: start;
+  }
+
+  .ui-demo-surface {
+    padding: 1rem;
+  }
+
+  .ui-demo-surface--dark {
+    background: linear-gradient(180deg, rgba(18, 18, 20, 0.95), rgba(9, 9, 11, 0.98));
+  }
+
+  .ui-demo-surface--light {
+    background: linear-gradient(180deg, rgba(248, 241, 230, 0.98), rgba(233, 222, 208, 0.96));
+    color: var(--demo-text-dark);
+    border-color: var(--demo-border-dark);
+  }
+
+  .ui-demo-surface--soft {
+    background: linear-gradient(180deg, rgba(27, 27, 32, 0.86), rgba(12, 12, 14, 0.94));
+  }
+
+  .ui-demo-surface--warm {
+    background: linear-gradient(180deg, rgba(246, 228, 202, 0.98), rgba(236, 216, 186, 0.94));
+    color: var(--demo-text-dark);
+    border-color: var(--demo-border-dark);
+  }
+
+  .ui-demo-surface h3 {
+    margin: 0.35rem 0 0;
+    font-size: 1.15rem;
+    font-weight: 900;
+    letter-spacing: 0.14em;
+    line-height: 1;
+    text-transform: uppercase;
+  }
+
+  .ui-demo-surface p {
+    margin-top: 0.65rem;
+    color: inherit;
+    opacity: 0.84;
+  }
+
+  .ui-demo-space-list,
+  .ui-demo-button-grid {
+    display: grid;
+    gap: var(--demo-gap-3);
+    margin-top: var(--demo-gap-4);
+  }
+
+  .ui-demo-space-card,
+  .ui-demo-button-card {
+    padding: 0.9rem;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.045);
+  }
+
+  .ui-demo-space-card__top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--demo-gap-3);
+  }
+
+  .ui-demo-space-card__top span {
+    font-size: 0.84rem;
+    font-weight: 900;
+    letter-spacing: 0.14em;
+    line-height: 1;
+    text-transform: uppercase;
+    color: rgba(247, 241, 230, 0.92);
+  }
+
+  .ui-demo-space-card__top strong {
+    font-size: 0.66rem;
+    font-weight: 900;
+    letter-spacing: 0.26em;
+    line-height: 1;
+    text-transform: uppercase;
+    color: rgba(214, 229, 154, 0.9);
+  }
+
+  .ui-demo-space-card p {
+    margin-top: 0.55rem;
+  }
+
+  .ui-demo-button-card {
+    display: grid;
+    gap: var(--demo-gap-3);
+  }
+
+  .ui-demo-button-card__note {
+    font-size: 0.68rem;
+    font-weight: 900;
+    letter-spacing: 0.24em;
+    line-height: 1.3;
+    text-transform: uppercase;
+    color: rgba(247, 241, 230, 0.68);
+  }
+
+  .ui-demo-footer-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--demo-gap-4);
+    margin-top: var(--demo-gap-6);
+    padding-bottom: 0.25rem;
+  }
+
+  .ui-demo-note {
+    padding: 1rem;
+    background: rgba(8, 8, 10, 0.84);
+  }
+
+  .ui-demo-note ul {
+    margin: 0.75rem 0 0;
+    padding-left: 1rem;
+  }
+
+  .ui-demo-note li + li {
+    margin-top: 0.45rem;
+  }
+
+  .ui-demo-note p,
+  .ui-demo-note li {
+    color: rgba(247, 241, 230, 0.8);
+  }
+
+  @media (max-width: 900px) {
+    .ui-demo-hero,
+    .ui-demo-grid,
+    .ui-demo-footer-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .ui-demo-shell {
+      padding: 0.65rem;
+    }
+
+    .ui-demo-stage {
+      padding: 0.9rem;
+    }
+
+    .ui-demo-pill {
+      top: 0.75rem;
+      left: 0.75rem;
+      padding: 0.55rem 0.8rem;
+      font-size: 0.58rem;
+    }
+
+    .ui-demo-hero {
+      margin-top: 2.2rem;
+    }
+
+    .ui-demo-actions,
+    .ui-demo-chips {
+      gap: var(--demo-gap-2);
+    }
+
+    .ui-demo-button {
+      width: 100%;
+    }
+  }
+</style>
