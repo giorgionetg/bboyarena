@@ -6,6 +6,7 @@ interface ImportMetaEnv {
   readonly PUBLIC_SITE_URL?: string;
   readonly PUBLIC_APP_VERSION?: string;
   readonly PUBLIC_DISCORD_URL?: string;
+  readonly PUBLIC_CONTACT_EMAIL?: string;
   readonly PUBLIC_NEWSLETTER_URL?: string;
   readonly PUBLIC_POCKETBASE_URL?: string;
   readonly PUBLIC_POCKETBASE_DEVLOGS_COLLECTION?: string;

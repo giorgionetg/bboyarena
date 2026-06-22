@@ -1,6 +1,7 @@
 import { buildLocalizedPath, getLocaleConfig, SUPPORTED_LOCALES, type LocaleCode } from './i18n';
 
 export const LEGAL_LAST_UPDATED = 'June 2026';
+export const LEGAL_MAIN_EMAIL = import.meta.env.PUBLIC_CONTACT_EMAIL?.trim() || 'info@bboyarena.org';
 
 export const LEGAL_PATHS = {
   privacy: '/privacy',
@@ -56,13 +57,8 @@ const privacyPage: LegalPageCopy = {
         },
         {
           label: 'Privacy contact',
-          value: 'giorgiotedesco.it',
-          href: 'https://giorgiotedesco.it'
-        },
-        {
-          label: 'Email',
-          value: 'privacy@giorgiotedesco.it',
-          href: 'mailto:privacy@giorgiotedesco.it'
+          value: LEGAL_MAIN_EMAIL,
+          href: `mailto:${LEGAL_MAIN_EMAIL}`
         }
       ]
     },
@@ -116,7 +112,7 @@ const privacyPage: LegalPageCopy = {
     {
       title: 'Children / minors',
       paragraphs: [
-        'BBoyArena is not intended to intentionally collect personal data from children under 16. If a parent or guardian believes that a minor has provided personal data, they can contact privacy@giorgiotedesco.it.'
+        `BBoyArena is not intended to intentionally collect personal data from children under 16. If a parent or guardian believes that a minor has provided personal data, they can contact ${LEGAL_MAIN_EMAIL}.`
       ]
     },
     {
@@ -124,13 +120,13 @@ const privacyPage: LegalPageCopy = {
       contacts: [
         {
           label: 'Privacy requests',
-          value: 'privacy@giorgiotedesco.it',
-          href: 'mailto:privacy@giorgiotedesco.it'
+          value: LEGAL_MAIN_EMAIL,
+          href: `mailto:${LEGAL_MAIN_EMAIL}`
         },
         {
           label: 'Privacy website',
-          value: 'giorgiotedesco.it',
-          href: 'https://giorgiotedesco.it'
+          value: LEGAL_MAIN_EMAIL,
+          href: `mailto:${LEGAL_MAIN_EMAIL}`
         }
       ]
     }
@@ -264,8 +260,8 @@ const termsPage: LegalPageCopy = {
         },
         {
           label: 'Privacy contact',
-          value: 'privacy@giorgiotedesco.it',
-          href: 'mailto:privacy@giorgiotedesco.it'
+          value: LEGAL_MAIN_EMAIL,
+          href: `mailto:${LEGAL_MAIN_EMAIL}`
         }
       ]
     }
@@ -321,7 +317,7 @@ const contactPage: LegalPageCopy = {
   description:
     'Find the official contact points for BBoyArena, including privacy requests, analytics, and project status.',
   intro:
-    'If you need to reach the project, this page keeps the main contact details in one place. General contact is still coming soon, so privacy and data requests should use the dedicated channels below.',
+    `If you need to reach the project, this page keeps the main contact details in one place. For general messages and privacy requests, use ${LEGAL_MAIN_EMAIL}.`,
   sections: [
     {
       title: 'Project',
@@ -341,14 +337,9 @@ const contactPage: LegalPageCopy = {
       title: 'Privacy / data requests',
       contacts: [
         {
-          label: 'Privacy website',
-          value: 'giorgiotedesco.it',
-          href: 'https://giorgiotedesco.it'
-        },
-        {
-          label: 'Privacy email',
-          value: 'privacy@giorgiotedesco.it',
-          href: 'mailto:privacy@giorgiotedesco.it'
+          label: 'Main email',
+          value: LEGAL_MAIN_EMAIL,
+          href: `mailto:${LEGAL_MAIN_EMAIL}`
         }
       ]
     },
@@ -364,8 +355,12 @@ const contactPage: LegalPageCopy = {
     },
     {
       title: 'General contact',
-      paragraphs: [
-        'Coming soon.'
+      contacts: [
+        {
+          label: 'Email',
+          value: LEGAL_MAIN_EMAIL,
+          href: `mailto:${LEGAL_MAIN_EMAIL}`
+        }
       ]
     }
   ]
