@@ -24,6 +24,10 @@ export interface HomeCopy {
   discordTitle: string;
   discordDescription: string;
   discordCta: string;
+  instagramLabel: string;
+  instagramTitle: string;
+  instagramDescription: string;
+  instagramCta: string;
   githubLabel: string;
   githubTitle: string;
   githubDescription: string;
@@ -58,6 +62,10 @@ export const HOME_COPY: Record<LocaleCode, HomeCopy> = {
     discordTitle: 'Join the community chat',
     discordDescription: 'Share feedback, follow progress, and talk with the crew while the project keeps evolving.',
     discordCta: 'Open Discord',
+    instagramLabel: 'Instagram',
+    instagramTitle: 'Follow the visual feed',
+    instagramDescription: 'See artwork, screenshots, short updates, and the visual language that keeps the project in motion.',
+    instagramCta: 'Open Instagram',
     githubLabel: 'GitHub',
     githubTitle: 'Browse the source',
     githubDescription: 'Check the codebase, track changes, and follow the open development side of the project.',
@@ -90,6 +98,10 @@ export const HOME_COPY: Record<LocaleCode, HomeCopy> = {
     discordTitle: 'Entra nella chat della community',
     discordDescription: 'Condividi feedback, segui i progressi e parla con la crew mentre il progetto continua a evolversi.',
     discordCta: 'Apri Discord',
+    instagramLabel: 'Instagram',
+    instagramTitle: 'Segui il feed visuale',
+    instagramDescription: 'Vedi artwork, screenshot, aggiornamenti brevi e il linguaggio visivo che tiene il progetto in movimento.',
+    instagramCta: 'Apri Instagram',
     githubLabel: 'GitHub',
     githubTitle: 'Sfoglia il sorgente',
     githubDescription: 'Controlla il codice, segui i cambiamenti e il lato open development del progetto.',
@@ -122,6 +134,10 @@ export const HOME_COPY: Record<LocaleCode, HomeCopy> = {
     discordTitle: 'Entra al chat de la comunidad',
     discordDescription: 'Comparte comentarios, sigue el avance y habla con la crew mientras el proyecto sigue creciendo.',
     discordCta: 'Abrir Discord',
+    instagramLabel: 'Instagram',
+    instagramTitle: 'Sigue el feed visual',
+    instagramDescription: 'Mira arte, capturas, actualizaciones breves y el lenguaje visual que mantiene vivo el proyecto.',
+    instagramCta: 'Abrir Instagram',
     githubLabel: 'GitHub',
     githubTitle: 'Explora el código',
     githubDescription: 'Revisa la base de código, sigue los cambios y la parte de open development del proyecto.',
@@ -154,6 +170,10 @@ export const HOME_COPY: Record<LocaleCode, HomeCopy> = {
     discordTitle: 'Entre no chat da comunidade',
     discordDescription: 'Compartilhe feedback, acompanhe o progresso e fale com a crew enquanto o projeto continua evoluindo.',
     discordCta: 'Abrir Discord',
+    instagramLabel: 'Instagram',
+    instagramTitle: 'Acompanhe o feed visual',
+    instagramDescription: 'Veja artes, capturas, atualizações curtas e a linguagem visual que mantém o projeto em movimento.',
+    instagramCta: 'Abrir Instagram',
     githubLabel: 'GitHub',
     githubTitle: 'Navegue pelo código',
     githubDescription: 'Confira a base de código, acompanhe as mudanças e o lado open development do projeto.',
@@ -186,6 +206,10 @@ export const HOME_COPY: Record<LocaleCode, HomeCopy> = {
     discordTitle: '加入社区聊天',
     discordDescription: '分享反馈、关注进展，并在项目持续推进时与团队交流。',
     discordCta: '打开 Discord',
+    instagramLabel: 'Instagram',
+    instagramTitle: '关注视觉动态',
+    instagramDescription: '查看插画、截图、简短更新，以及推动项目继续前进的视觉语言。',
+    instagramCta: '打开 Instagram',
     githubLabel: 'GitHub',
     githubTitle: '浏览源码',
     githubDescription: '查看代码库、跟踪变更，并关注项目的开放开发部分。',

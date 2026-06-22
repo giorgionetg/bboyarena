@@ -85,6 +85,7 @@ const logicalPath = pagePath ?? stripLocalePrefix(Astro.url.pathname);
 const resolvedCanonical = canonical ?? buildLocalizedPath(locale, logicalPath);
 const resolvedAlternates = alternateLinks ?? buildLocalizedAlternates(logicalPath);
 const discordHref = import.meta.env.PUBLIC_DISCORD_URL?.trim();
+const instagramHref = import.meta.env.PUBLIC_INSTAGRAM_URL?.trim();
 const githubRepository = process.env.GITHUB_REPOSITORY ?? 'giorgionetg/bboyarena';
 const githubHref = import.meta.env.PUBLIC_GITHUB_URL?.trim() ?? `https://github.com/${githubRepository}`;
 const githubLabel = githubRepository.split('/').pop() ?? 'GitHub';
@@ -101,6 +102,13 @@ const footerSecondaryLinks = [
   ...footerLinks.slice(4),
   ...(discordHref ? [{ label: copy.footer.discord, href: discordHref, external: true }] : []),
   ...(githubHref ? [{ label: copy.footer.github, href: githubHref, external: true }] : [])
+];
+const footerSocialLinks = [
+  ...(instagramHref
+    ? [{ label: 'Instagram', href: instagramHref, external: true, icon: 'instagram' as const }]
+    : []),
+  ...(discordHref ? [{ label: copy.footer.discord, href: discordHref, external: true, icon: 'discord' as const }] : []),
+  ...(githubHref ? [{ label: copy.footer.github, href: githubHref, external: true, icon: 'github' as const }] : [])
 ];
 
 const seo = buildSeoData({
@@ -451,6 +459,45 @@ const manifestLinkTag =
             <div class="flex justify-center lg:justify-start">
               <HomeLogo locale={locale} label="BboyArena home" />
             </div>
+            {footerSocialLinks.length > 0 && (
+              <div class="flex items-center justify-center gap-3 lg:justify-start" aria-label="Social links">
+                {footerSocialLinks.map((link) => (
+                  <a
+                    href={link.href}
+                    class="flex h-9 w-9 items-center justify-center rounded-full border border-[#4f4337]/60 bg-[#f4ebdf] text-[#2d251d] transition hover:-translate-y-0.5 hover:bg-[#e8ddc6] hover:text-[#7b6b58]"
+                    target={link.external ? '_blank' : undefined}
+                    rel={link.external ? 'noreferrer noopener' : undefined}
+                    aria-label={link.label}
+                    title={link.label}
+                  >
+                    {link.icon === 'instagram' && (
+                      <svg viewBox="0 0 24 24" class="h-4.5 w-4.5" aria-hidden="true">
+                        <path
+                          d="M7.5 4A3.5 3.5 0 0 0 4 7.5v9A3.5 3.5 0 0 0 7.5 20h9a3.5 3.5 0 0 0 3.5-3.5v-9A3.5 3.5 0 0 0 16.5 4h-9Zm0 1.5h9a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-9a2 2 0 0 1-2-2v-9a2 2 0 0 1 2-2Zm9.75 1.1a.9.9 0 1 0 0 1.8.9.9 0 0 0 0-1.8ZM12 7.1A4.9 4.9 0 1 0 16.9 12 4.91 4.91 0 0 0 12 7.1Zm0 1.5A3.4 3.4 0 1 1 8.6 12 3.4 3.4 0 0 1 12 8.6Z"
+                          fill="currentColor"
+                        />
+                      </svg>
+                    )}
+                    {link.icon === 'discord' && (
+                      <svg viewBox="0 0 24 24" class="h-4.5 w-4.5" aria-hidden="true">
+                        <path
+                          d="M7.4 7.2c1.1-.5 2.2-.8 3.5-.9l.1.2c-1.2.2-2.2.6-3 .9-.1 0-.2-.1-.3-.2Zm9.2 0c-.1.1-.2.2-.3.2-.8-.4-1.8-.7-3-.9l.1-.2c1.3.1 2.4.4 3.5.9ZM5.5 7.7c-1.1 1.4-1.8 3.3-1.8 5.4 0 1.6.4 3.1 1.1 4.4 1.5 1 3.2 1.7 5 2 .2-.4.4-.8.5-1.2-1-.1-1.8-.4-2.4-.8.5.1 1.1.2 1.7.3 1.1.1 2.2.1 3.2 0 1.1-.1 1.9-.2 2.4-.3-.6.4-1.4.7-2.4.8.1.4.3.8.5 1.2 1.8-.3 3.5-1 5-2 .7-1.3 1.1-2.8 1.1-4.4 0-2.1-.7-4-1.8-5.4-1.4-.6-2.8-1-4.2-1.2l-.5 1c-1-.1-1.9-.1-2.9 0l-.5-1c-1.4.2-2.8.6-4.2 1.2Zm4 5.8c0 .7-.5 1.3-1.2 1.3-.7 0-1.2-.6-1.2-1.3s.5-1.3 1.2-1.3c.7 0 1.2.6 1.2 1.3Zm6.4 0c0 .7-.5 1.3-1.2 1.3-.7 0-1.2-.6-1.2-1.3s.5-1.3 1.2-1.3c.7 0 1.2.6 1.2 1.3Z"
+                          fill="currentColor"
+                        />
+                      </svg>
+                    )}
+                    {link.icon === 'github' && (
+                      <svg viewBox="0 0 24 24" class="h-4.5 w-4.5" aria-hidden="true">
+                        <path
+                          d="M12 2C6.5 2 2 6.5 2 12c0 4.4 2.9 8.1 6.8 9.4.5.1.7-.2.7-.5v-1.8c-2.8.6-3.4-1.2-3.4-1.2-.5-1.1-1.1-1.4-1.1-1.4-.9-.6.1-.6.1-.6 1 0 1.5 1 1.5 1 1 .1 1.5.7 1.7 1 .4.8 1 1.1 1.4 1.2.1-.7.4-1.1.7-1.4-2.3-.3-4.7-1.1-4.7-5 0-1.1.4-2 1-2.7-.1-.3-.4-1.4.1-2.8 0 0 .8-.3 2.7 1a9.2 9.2 0 0 1 5 0c1.9-1.3 2.7-1 2.7-1 .5 1.4.2 2.5.1 2.8.6.7 1 1.6 1 2.7 0 3.9-2.4 4.7-4.7 5 .4.3.8.9.8 1.8v2.7c0 .3.2.6.7.5A10 10 0 0 0 22 12C22 6.5 17.5 2 12 2Z"
+                          fill="currentColor"
+                        />
+                      </svg>
+                    )}
+                  </a>
+                ))}
+              </div>
+            )}
             <div class="uppercase tracking-[0.22em]">&copy; {new Date().getFullYear()} BboyArena.org.</div>
           </div>
 
