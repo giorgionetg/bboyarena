@@ -20,6 +20,7 @@ export interface SeoInput {
   twitterSite?: string;
   twitterCreator?: string;
   author?: string;
+  sameAs?: string[];
   publishedTime?: string;
   modifiedTime?: string;
   section?: string;
@@ -66,6 +67,7 @@ export const buildSeoData = (input: SeoInput): SeoResolved => {
     imageAlt,
     logo,
     author,
+    sameAs = [],
     publishedTime,
     modifiedTime,
     section,
@@ -91,7 +93,8 @@ export const buildSeoData = (input: SeoInput): SeoResolved => {
           publisher: {
             '@type': 'Organization',
             name: siteName,
-            logo: logoUrl ? { '@type': 'ImageObject', url: logoUrl } : undefined
+            logo: logoUrl ? { '@type': 'ImageObject', url: logoUrl } : undefined,
+            sameAs: sameAs.length > 0 ? sameAs : undefined
           },
           datePublished: publishedTime,
           dateModified: modifiedTime ?? publishedTime,
@@ -105,7 +108,14 @@ export const buildSeoData = (input: SeoInput): SeoResolved => {
           name: title,
           description,
           url: canonicalUrl,
-          inLanguage: locale
+          inLanguage: locale,
+          publisher: {
+            '@type': 'Organization',
+            name: siteName,
+            logo: logoUrl ? { '@type': 'ImageObject', url: logoUrl } : undefined,
+            sameAs: sameAs.length > 0 ? sameAs : undefined
+          },
+          sameAs: sameAs.length > 0 ? sameAs : undefined
         };
 
   return {

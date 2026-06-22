@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://bboyarena.org/sitemap-index.xml

@@ -1,10 +1,12 @@
 import { defineConfig } from 'astro/config';
 import react from '@astrojs/react';
 import tailwindcss from '@tailwindcss/vite';
+import sitemap from '@astrojs/sitemap';
 import AstroPWA from '@vite-pwa/astro';
 
 const repoName = process.env.GITHUB_REPOSITORY?.split('/')[1];
 const publicSiteUrl = process.env.PUBLIC_SITE_URL;
+const siteUrl = publicSiteUrl?.trim() || 'https://bboyarena.org';
 const isCustomDomain = Boolean(publicSiteUrl) && !publicSiteUrl.includes('github.io');
 const isGithubPagesProjectRepo = process.env.GITHUB_ACTIONS === 'true' && repoName && !repoName.endsWith('.github.io');
 const base = process.env.ASTRO_BASE_PATH ?? (isCustomDomain ? '/' : isGithubPagesProjectRepo ? `/${repoName}/` : '/');
@@ -18,7 +20,7 @@ const chromeColor = '#eae0d0';
 
 // https://astro.build/config
 export default defineConfig({
-  site: publicSiteUrl,
+  site: siteUrl,
   base,
   i18n: {
     defaultLocale: 'en-US',
@@ -35,6 +37,7 @@ export default defineConfig({
   },
   integrations: [
     react(),
+    sitemap(),
     AstroPWA({
       registerType: 'autoUpdate',
       base,
