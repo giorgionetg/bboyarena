@@ -40,6 +40,19 @@ const category = NEWS_CATEGORIES[categoryKey];
 const items = await getNewsItemsByCategory(categoryKey);
 const pocketBaseDevlogListUrl = categoryKey === 'devlog' ? buildPocketBaseDevlogListUrl(8) : null;
 const devlogBasePath = buildLocalizedPath(locale, '/news/devlog');
+const isDevlogArchive = categoryKey === 'devlog';
+const devlogPanoramaCopy =
+  locale === 'it-IT'
+    ? {
+        title: 'Uno sguardo allo stato del gioco',
+        description:
+          'Al momento questo spazio e una vista panorama esplorabile. In futuro potra diventare un pannello Three.js live con scena giocabile, stato del prototipo e avanzamento visivo.'
+      }
+    : {
+        title: 'A look at the game state',
+        description:
+          'Right now this space is an explorable panorama. Later it can become a live Three.js panel with the current playable scene, prototype status, and visual progress.'
+      };
 ---
 
 <Layout
@@ -64,8 +77,8 @@ const devlogBasePath = buildLocalizedPath(locale, '/news/devlog');
       <div class="street-panel rounded-[1.75rem] p-5 sm:p-7">
         <div class="flex items-center justify-between gap-3">
           <p class="text-[10px] font-black uppercase tracking-[0.3em] text-[#756553]">Archive</p>
-          <a href={buildLocalizedPath(locale, '/news')} class="text-[10px] font-black uppercase tracking-[0.26em] text-[#7c8f4c]">
-            Back to hub
+          <a href={devlogBasePath} class="text-[10px] font-black uppercase tracking-[0.26em] text-[#7c8f4c]">
+            Devlog home
           </a>
         </div>
 
@@ -105,14 +118,25 @@ const devlogBasePath = buildLocalizedPath(locale, '/news/devlog');
         </div>
       </div>
 
-      <aside class="street-dark rounded-[1.75rem] p-5 sm:p-7">
-        <p class="text-[10px] font-black uppercase tracking-[0.38em] text-[#d9c9b1]">{copy.news.categoryRules}</p>
-        <div class="mt-4 space-y-4 text-sm leading-relaxed text-[#f8f1e7]">
-          {copy.news.rules[categoryKey].map((paragraph) => (
-            <p>{paragraph}</p>
-          ))}
-        </div>
-      </aside>
+      {isDevlogArchive ? (
+        <aside class="street-dark flex min-h-[28rem] overflow-hidden rounded-[1.75rem] p-0">
+          <PanoramaFallback
+            image="/equirectangular-01.png"
+            fillParent
+            overlayTitle={devlogPanoramaCopy.title}
+            overlayDescription={devlogPanoramaCopy.description}
+          />
+        </aside>
+      ) : (
+        <aside class="street-dark rounded-[1.75rem] p-5 sm:p-7">
+          <p class="text-[10px] font-black uppercase tracking-[0.38em] text-[#d9c9b1]">{copy.news.categoryRules}</p>
+          <div class="mt-4 space-y-4 text-sm leading-relaxed text-[#f8f1e7]">
+            {copy.news.rules[categoryKey].map((paragraph) => (
+              <p>{paragraph}</p>
+            ))}
+          </div>
+        </aside>
+      )}
     </section>
   </div>
 

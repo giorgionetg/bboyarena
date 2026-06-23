@@ -1,143 +1,38 @@
 ---
 import Layout from '../../components/layout/Layout.astro';
-import {
-  NEWS_CATEGORIES,
-  getRecentNewsItems,
-  getNewsCategoryPath,
-  isExternalNewsItem
-} from '../../lib/news';
 import { buildLocalizedAlternates, buildLocalizedPath } from '../../lib/i18n';
 
-const recentItems = await getRecentNewsItems(6);
-const sceneItems = recentItems.filter((item) => item.category === 'scene');
+const devlogHref = buildLocalizedPath('en-US', '/news/devlog');
 ---
 
 <Layout
-  title="News - Breakdance 3D"
-  description="Devlog, app news, and external scene updates. Everything Breakdance 3D in one hub."
+  title="Devlog - BboyArena"
+  description="Latest public BboyArena development notes, project updates, and build progress."
   locale="en-US"
   pagePath="/news"
-  canonical={buildLocalizedPath('en-US', '/news')}
-  alternateLinks={buildLocalizedAlternates('/news')}
+  canonical={devlogHref}
+  alternateLinks={buildLocalizedAlternates('/news/devlog')}
+  noindex
 >
-  <div class="mx-auto flex w-full max-w-6xl flex-col gap-6">
-    <section class="street-panel rounded-[1.75rem] p-5 sm:p-7">
-      <p class="text-[10px] font-black uppercase tracking-[0.38em] text-[#756553]">News hub</p>
-      <h1 class="mt-3 text-4xl font-black uppercase leading-[0.9] tracking-[0.16em] text-[#2d261f] sm:text-6xl">
-        Update feed
-      </h1>
-      <p class="mt-4 max-w-3xl text-sm leading-relaxed text-[#54483b] sm:text-base">
-        Here we separate the project story into three streams: the team devlog, app updates, and real scene news.
-      </p>
-    </section>
+  <script is:inline define:vars={{ devlogHref }}>
+    {`window.location.replace(devlogHref);`}
+  </script>
 
-    <section class="grid gap-4 lg:grid-cols-3">
-      {Object.values(NEWS_CATEGORIES).map((category) => (
-        <a
-          href={getNewsCategoryPath(category.slug)}
-          class="street-panel group rounded-[1.5rem] p-5 transition hover:-translate-y-0.5 hover:shadow-[0_14px_0_rgba(95,82,69,0.6)]"
-        >
-          <div class="flex items-center justify-between gap-3">
-            <div>
-              <p class="text-[10px] font-black uppercase tracking-[0.3em] text-[#756553]">{category.label}</p>
-              <h2 class="mt-2 text-2xl font-black uppercase tracking-[0.16em] text-[#2d261f]">{category.title}</h2>
-            </div>
-            <span class="street-chip rounded-full px-3 py-1 text-[10px] font-black uppercase tracking-[0.24em] text-[#2d261f]" style={`background:${category.accent}20`}>
-              Open
-            </span>
-          </div>
-          <p class="mt-4 text-sm leading-relaxed text-[#54483b]">{category.description}</p>
-          <div class="mt-5 text-[10px] font-black uppercase tracking-[0.28em] text-[#756553] group-hover:text-[#2d261f]">
-            Enter archive
-          </div>
-        </a>
-      ))}
-    </section>
-
-    <section class="grid gap-4 lg:grid-cols-[1.15fr_0.85fr]">
-      <div class="street-panel rounded-[1.75rem] p-5 sm:p-7">
-        <div class="flex items-center justify-between gap-3">
-          <div>
-            <p class="text-[10px] font-black uppercase tracking-[0.3em] text-[#756553]">Latest drops</p>
-            <h2 class="mt-2 text-2xl font-black uppercase tracking-[0.16em] text-[#2d261f]">Latest updates</h2>
-          </div>
-          <a href={buildLocalizedPath('en-US', '/news/devlog')} class="text-[10px] font-black uppercase tracking-[0.26em] text-[#7c8f4c]">
-            Devlog archive
-          </a>
-        </div>
-
-        <div class="mt-6 grid gap-4">
-          {recentItems.map((item) => (
-            <article class="rounded-[1.25rem] border-2 border-[#4f4337] bg-[#f6efe4] p-4 shadow-[0_8px_0_rgba(95,82,69,0.25)]">
-              <div class="flex flex-wrap items-center gap-2 text-[10px] font-black uppercase tracking-[0.24em]">
-                <span
-                  class="street-chip rounded-full px-2.5 py-1"
-                  style={`background:${NEWS_CATEGORIES[item.category].accent}22;color:${NEWS_CATEGORIES[item.category].accent}`}
-                >
-                  {NEWS_CATEGORIES[item.category].label}
-                </span>
-                <span class="text-[#756553]">{new Date(item.publishedTime).toLocaleDateString('en-US')}</span>
-                {isExternalNewsItem(item) && (
-                  <span class="text-[#bc613a]">
-                    {item.sourceName}
-                  </span>
-                )}
-              </div>
-              <h3 class="mt-3 text-lg font-black uppercase tracking-[0.12em] text-[#2d261f]">
-                {item.title}
-              </h3>
-              <p class="mt-2 text-sm leading-relaxed text-[#54483b]">{item.excerpt}</p>
-              <div class="mt-4 flex flex-wrap items-center gap-3 text-[10px] font-black uppercase tracking-[0.24em]">
-                <a
-                  href={`${getNewsCategoryPath(item.category)}/${item.slug}`}
-                  class="street-button rounded-full px-3 py-1.5 text-[#2d251d] transition hover:bg-[#f4ebdf]"
-                >
-                  Read more
-                </a>
-                {isExternalNewsItem(item) && (
-                  <a
-                    href={item.sourceUrl}
-                    target="_blank"
-                    rel="noreferrer"
-                    class="text-[#bc613a] transition hover:text-[#9d4d2d]"
-                  >
-                    Source
-                  </a>
-                )}
-                <span class="text-[#756553]">{NEWS_CATEGORIES[item.category].title}</span>
-              </div>
-            </article>
-          ))}
-        </div>
-      </div>
-
-      <aside class="street-dark rounded-[1.75rem] p-5 sm:p-7">
-        <p class="text-[10px] font-black uppercase tracking-[0.38em] text-[#d9c9b1]">Scene notes</p>
-        <div class="mt-4 space-y-4">
-          {sceneItems.length > 0 ? (
-            sceneItems.map((item) => (
-              <article class="rounded-[1.25rem] border border-[#6a5b4d] bg-[rgba(245,237,224,0.08)] p-4">
-                <p class="text-[10px] font-black uppercase tracking-[0.26em] text-[#e8ddc6]">
-                  {isExternalNewsItem(item) ? item.sourceName : 'Scene'}
-                </p>
-                <h3 class="mt-2 text-base font-black uppercase tracking-[0.12em] text-[#f8f1e7]">
-                  {item.title}
-                </h3>
-                <p class="mt-2 text-sm leading-relaxed text-[#f8f1e7]">
-                  {item.excerpt}
-                </p>
-              </article>
-            ))
-          ) : (
-            <div class="rounded-[1.25rem] border border-[#6a5b4d] bg-[rgba(245,237,224,0.08)] p-4">
-              <p class="text-sm leading-relaxed text-[#f8f1e7]">
-                The <strong>scene</strong> section is ready for an external feed. Connect
-                `PUBLIC_NEWS_EXTERNAL_FEED_URL` to populate it with real news.
-              </p>
-            </div>
-          )}
-        </div>
-      </aside>
-    </section>
-  </div>
+  <section class="mx-auto w-full max-w-4xl street-panel rounded-[1.75rem] p-5 sm:p-7">
+    <p class="text-[10px] font-black uppercase tracking-[0.38em] text-[#756553]">News home</p>
+    <h1 class="mt-3 text-4xl font-black uppercase leading-[0.92] tracking-[0.16em] text-[#2d261f] sm:text-5xl">
+      Devlog is the news home
+    </h1>
+    <p class="mt-4 max-w-2xl text-sm leading-relaxed text-[#54483b] sm:text-base">
+      Redirecting to the public devlog archive. If nothing happens, open the devlog from the button below.
+    </p>
+    <div class="mt-6">
+      <a
+        href={devlogHref}
+        class="street-button street-button-primary inline-flex rounded-[1.25rem] px-6 py-3 text-xs font-black uppercase tracking-[0.28em] transition hover:-translate-y-0.5"
+      >
+        Open devlog
+      </a>
+    </div>
+  </section>
 </Layout>

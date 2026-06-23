@@ -1,6 +1,6 @@
 {
   "items": [
     { "key": "manifesto", "path": "/manifesto" },
-    { "key": "news", "path": "/news" }
+    { "key": "news", "path": "/news/devlog" }
   ]
 }

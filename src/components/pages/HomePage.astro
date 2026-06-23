@@ -24,7 +24,11 @@ const githubHref =
 const newsletterHref = import.meta.env.PUBLIC_NEWSLETTER_URL?.trim() ?? buildLocalizedPath(locale, '/contact');
 const pocketBaseDevlogListUrl = buildPocketBaseDevlogListUrl(3);
 const devlogArchiveHref = buildLocalizedPath(locale, '/news/devlog');
-const hasLocalDevlogs = devlogs.length > 0;
+const latestDevlog = devlogs[0];
+const latestDevlogHref = latestDevlog
+  ? buildLocalizedPath(locale, `/news/${latestDevlog.category}/${latestDevlog.slug}`)
+  : devlogArchiveHref;
+const devNotesCtaLabel = locale === 'it-IT' ? 'Leggi dev notes' : 'Read dev notes';
 ---
 
 <Layout
@@ -74,7 +78,7 @@ const hasLocalDevlogs = devlogs.length > 0;
             {copy.manifestoCta}
           </a>
           <a
-            href={buildLocalizedPath(locale, '/news')}
+            href={devlogArchiveHref}
             class="street-link-secondary px-1 py-3 text-xs font-black uppercase tracking-[0.24em] transition"
           >
             {copy.archiveCta}<span aria-hidden="true">→</span>
@@ -82,55 +86,17 @@ const hasLocalDevlogs = devlogs.length > 0;
         </div>
       </div>
 
-      <aside
-        class={`street-dark flex h-full flex-col overflow-hidden rounded-[1.75rem] ${
-          hasLocalDevlogs ? 'p-5 sm:p-7' : 'p-0'
-        }`}
-      >
-        {hasLocalDevlogs ? (
-          <>
-            <div class="flex flex-wrap items-center gap-2">
-              <p class="text-[10px] font-black uppercase tracking-[0.38em] text-[#d9c9b1]">{copy.devlogsTitle}</p>
-              {pocketBaseDevlogListUrl && (
-                <span class="street-chip rounded-full px-2.5 py-1 text-[9px] font-black uppercase tracking-[0.22em] text-[#f8f1e7]">
-                  PocketBase live
-                </span>
-              )}
-            </div>
-            <p class="mt-3 max-w-xl text-sm leading-relaxed text-[#f8f1e7]">{copy.devlogsLead}</p>
-
-            <div class="mt-5 flex min-h-0 flex-1 flex-col gap-4" data-pb-devlog-feed>
-              {devlogs.map((item) => (
-                <article class="rounded-[1.25rem] border border-[#6a5b4d] bg-[rgba(245,237,224,0.08)] p-4">
-                  <div class="flex flex-wrap items-center gap-2 text-[10px] font-black uppercase tracking-[0.24em]">
-                    <span class="street-badge-passive rounded-full border-[#d9e2bf]/30 bg-[rgba(163,185,90,0.12)] px-2.5 py-1 text-[#d9e2bf]">
-                      {siteCopy.news.categories.devlog.label}
-                    </span>
-                    <span class="text-[#e8ddc6]">{new Intl.DateTimeFormat(locale, { year: 'numeric', month: 'short', day: 'numeric' }).format(new Date(item.publishedTime))}</span>
-                  </div>
-                  <h2 class="mt-3 text-lg font-black uppercase tracking-[0.12em] text-[#f8f1e7]">{item.title}</h2>
-                  <p class="mt-2 text-sm leading-relaxed text-[#f8f1e7]">{item.excerpt}</p>
-                  <div class="mt-4 text-[10px] font-black uppercase tracking-[0.24em]">
-                    <a href={buildLocalizedPath(locale, `/news/${item.category}/${item.slug}`)} class="inline-flex items-center gap-1 text-[#d9e2bf] underline decoration-[#d9e2bf]/45 decoration-2 underline-offset-4 transition hover:text-white hover:decoration-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#d9e2bf]">
-                      {copy.devlogCardCta}<span aria-hidden="true">→</span>
-                    </a>
-                  </div>
-                </article>
-              ))}
-            </div>
-          </>
-        ) : (
-          <div class="flex min-h-[64svh] flex-1 flex-col gap-4 lg:min-h-0" data-pb-devlog-feed>
-            <PanoramaFallback
-              image="/equirectangular-01.png"
-              fillParent
-              overlayTitle={copy.devlogsTitle}
-              overlayDescription={copy.devlogsLead}
-              overlayCtaHref={devlogArchiveHref}
-              overlayCtaLabel={copy.devlogCardCta}
-            />
-          </div>
-        )}
+      <aside class="street-dark flex h-full flex-col overflow-hidden rounded-[1.75rem] p-0">
+        <div class="flex min-h-[64svh] flex-1 flex-col gap-4 lg:min-h-0">
+          <PanoramaFallback
+            image="/equirectangular-01.png"
+            fillParent
+            overlayTitle={latestDevlog?.title ?? copy.devlogsTitle}
+            overlayDescription={latestDevlog?.excerpt ?? copy.devlogsLead}
+            overlayCtaHref={latestDevlogHref}
+            overlayCtaLabel={devNotesCtaLabel}
+          />
+        </div>
       </aside>
     </section>
     

@@ -21,6 +21,7 @@ const category = NEWS_CATEGORIES[categoryKey];
 const items = await getNewsItemsByCategory(categoryKey);
 const pocketBaseDevlogListUrl = categoryKey === 'devlog' ? buildPocketBaseDevlogListUrl(8) : null;
 const devlogBasePath = buildLocalizedPath('en-US', '/news/devlog');
+const isDevlogArchive = categoryKey === 'devlog';
 ---
 
 <Layout
@@ -47,7 +48,7 @@ const devlogBasePath = buildLocalizedPath('en-US', '/news/devlog');
       <div class="street-panel rounded-[1.75rem] p-5 sm:p-7">
         <div class="flex items-center justify-between gap-3">
           <p class="text-[10px] font-black uppercase tracking-[0.3em] text-[#756553]">Archive</p>
-          <a href={buildLocalizedPath('en-US', '/news')} class="text-[10px] font-black uppercase tracking-[0.26em] text-[#7c8f4c]">Back to hub</a>
+          <a href={devlogBasePath} class="text-[10px] font-black uppercase tracking-[0.26em] text-[#7c8f4c]">Devlog home</a>
         </div>
 
         <div class="mt-6 grid gap-4" data-pb-devlog-archive>
@@ -100,29 +101,34 @@ const devlogBasePath = buildLocalizedPath('en-US', '/news/devlog');
         </div>
       </div>
 
-      <aside class="street-dark rounded-[1.75rem] p-5 sm:p-7">
-        <p class="text-[10px] font-black uppercase tracking-[0.38em] text-[#d9c9b1]">Category rules</p>
-        <div class="mt-4 space-y-4 text-sm leading-relaxed text-[#f8f1e7]">
-          {categoryParam === 'devlog' && (
-            <>
-              <p>We talk about the process: build, art, gameplay, technical choices, and internal experiments.</p>
-              <p>The tone can be more behind the scenes and less promotional.</p>
-            </>
-          )}
-          {categoryParam === 'app' && (
-            <>
-              <p>This is where features, fixes, interface polish, and product changes go.</p>
-              <p>It is the right place for clear, release-oriented updates.</p>
-            </>
-          )}
-          {categoryParam === 'scene' && (
-            <>
-              <p>This section gathers real news from an external source configured through env.</p>
-              <p>When the feed is active, each item can open a local noindex page or the original source.</p>
-            </>
-          )}
-        </div>
-      </aside>
+      {isDevlogArchive ? (
+        <aside class="street-dark flex min-h-[28rem] overflow-hidden rounded-[1.75rem] p-0">
+          <PanoramaFallback
+            image="/equirectangular-01.png"
+            fillParent
+            overlayTitle="A look at the game state"
+            overlayDescription="Right now this space is an explorable panorama. Later it can become a live Three.js panel with the current playable scene, prototype status, and visual progress."
+          />
+        </aside>
+      ) : (
+        <aside class="street-dark rounded-[1.75rem] p-5 sm:p-7">
+          <p class="text-[10px] font-black uppercase tracking-[0.38em] text-[#d9c9b1]">Category rules</p>
+          <div class="mt-4 space-y-4 text-sm leading-relaxed text-[#f8f1e7]">
+            {categoryParam === 'app' && (
+              <>
+                <p>This is where features, fixes, interface polish, and product changes go.</p>
+                <p>It is the right place for clear, release-oriented updates.</p>
+              </>
+            )}
+            {categoryParam === 'scene' && (
+              <>
+                <p>This section gathers real news from an external source configured through env.</p>
+                <p>When the feed is active, each item can open a local noindex page or the original source.</p>
+              </>
+            )}
+          </div>
+        </aside>
+      )}
     </section>
   </div>
 

@@ -46,10 +46,10 @@ const pocketBaseRecordUrl = resolvedPath ? buildPocketBaseDevlogRecordUrl(resolv
         <div class="mt-4 space-y-4 text-sm leading-relaxed text-[#54483b]">
           <p>
             Return to the
-            <a href={buildLocalizedPath(locale, '/news')} class="font-black uppercase tracking-[0.16em] text-[#7c8f4c]">
-              news hub
+            <a href={devlogBasePath} class="font-black uppercase tracking-[0.16em] text-[#7c8f4c]">
+              devlog archive
             </a>
-            or jump back to the devlog archive.
+            or jump back home.
           </p>
           <p>
             If PocketBase has a matching record, you will see it below without rebuilding or pushing new code.
@@ -58,7 +58,7 @@ const pocketBaseRecordUrl = resolvedPath ? buildPocketBaseDevlogRecordUrl(resolv
             <a href={buildLocalizedPath(locale, '/')} class="street-button rounded-full px-3 py-1.5 text-[#2d251d] transition hover:bg-[#f4ebdf]">
               Home
             </a>
-            <a href={buildLocalizedPath(locale, '/news/devlog')} class="text-[#7c8f4c] transition hover:text-[#5d6f39]">
+            <a href={devlogBasePath} class="text-[#7c8f4c] transition hover:text-[#5d6f39]">
               Devlog archive
             </a>
           </div>

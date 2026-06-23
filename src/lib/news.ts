@@ -64,6 +64,32 @@ export const NEWS_CATEGORIES: Record<NewsCategory, NewsCategoryMeta> = {
 
 const LOCAL_NEWS: LocalNewsItem[] = [
   {
+    category: 'devlog',
+    slug: 'development-log-public-surface-pwa-game-ui',
+    sourceKind: 'local',
+    title: 'Development log: public surface, PWA, and game UI foundation',
+    description:
+      'A full recap of the recent work on BboyArena: the public site, PWA setup, devlog system, panorama fallback, and the first isolated game UI layer.',
+    excerpt:
+      'The project now has a stronger public surface, a working PWA foundation, a real devlog path, and a separated game UI sandbox for the next phase.',
+    publishedTime: '2026-06-23T08:20:00+02:00',
+    modifiedTime: '2026-06-23T08:20:00+02:00',
+    author: 'BboyArena',
+    image: '/readme-banner.png',
+    imageAlt: 'BboyArena public development banner',
+    tags: ['devlog', 'pwa', 'astro', 'game-ui', 'open-development'],
+    body: [
+      'This devlog collects the main development work completed across the last few days. BboyArena moved from a simple Astro and React project into a more complete public surface for the future browser game.',
+      'The PWA foundation has been cleaned up for Android Chrome, iOS support, GitHub Pages, and the custom bboyarena.org domain. The manifest, icons, service worker, app theme color, sitemap, robots file, and SEO metadata now have a clearer production path.',
+      'The homepage has also changed direction. It now presents the project as an open, independent breaking culture project instead of a generic technical demo. The README was rewritten for players and community members, with a visual banner and a clearer explanation of the current early-stage status.',
+      'The devlog area no longer relies on invented placeholder posts. When no live content exists, the latest devlog space becomes an interactive panoramic scene, with an editorial overlay and a direct call to read the devlog archive.',
+      'A PocketBase path is ready for future live devlogs, so new records can appear without rebuilding the site. Until then, local devlog posts like this one keep the site honest and useful.',
+      'The game UI has been split away from the global Astro and Tailwind styling. The new game root, dedicated game CSS, fullscreen controls, HUD components, 2D menu states, and internal dev pages give the game a separate visual language that can evolve without leaking into the public site.',
+      'The i18n structure was reorganized too. Page copy now lives in page-specific files, while shared site, news, and game copy lives under a dedicated i18n data folder. That should make future edits much easier to find.',
+      'The next step is to write smaller, real devlogs as the project moves forward: one for PWA updates, one for the visual direction, one for the game UI, and one for the first gameplay prototype.'
+    ]
+  },
+  {
     category: 'app',
     slug: 'news-hub-structure',
     sourceKind: 'local',

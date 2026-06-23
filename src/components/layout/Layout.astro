@@ -3,6 +3,7 @@ import '../../styles/global.css';
 import { buildSeoData } from '../../lib/seo';
 import { withBasePath } from '../../lib/base';
 import { pwaInfo } from 'virtual:pwa-info';
+import navData from '../../data/navigation.json';
 import {
   buildLocalizedAlternates,
   buildLocalizedPath,
@@ -84,6 +85,8 @@ const copy = getSiteCopy(locale);
 const logicalPath = pagePath ?? stripLocalePrefix(Astro.url.pathname);
 const resolvedCanonical = canonical ?? buildLocalizedPath(locale, logicalPath);
 const resolvedAlternates = alternateLinks ?? buildLocalizedAlternates(logicalPath);
+const isDevRoute = logicalPath.startsWith('/__dev');
+const devlogsPath = buildLocalizedPath(locale, '/news/devlog');
 const discordHref = import.meta.env.PUBLIC_DISCORD_URL?.trim();
 const instagramHref = import.meta.env.PUBLIC_INSTAGRAM_URL?.trim();
 const githubRepository = process.env.GITHUB_REPOSITORY ?? 'giorgionetg/bboyarena';
@@ -97,11 +100,17 @@ const footerLinks = [
   { label: copy.footer.privacy, href: buildLocalizedPath(locale, '/privacy') },
   { label: copy.footer.cookies, href: buildLocalizedPath(locale, '/cookies') },
   { label: copy.footer.terms, href: buildLocalizedPath(locale, '/terms') },
-  { label: copy.footer.openSource, href: buildLocalizedPath(locale, '/open-development') },
-  { label: copy.footer.participate, href: buildLocalizedPath(locale, '/news') },
-  { label: copy.footer.contact, href: buildLocalizedPath(locale, '/contact') },
 ];
 const footerSecondaryLinks = footerLinks.slice(4);
+const headerNavLinks = isDevRoute
+  ? [
+      { label: copy.nav.manifesto, path: '/manifesto' },
+      { label: 'Devlogs', path: '/news/devlog' }
+    ]
+  : (navData.items as { key: keyof typeof copy.nav; path: string }[]).map((item) => ({
+      label: copy.nav[item.key],
+      path: item.path
+    }));
 const footerSocialLinks = [
   ...(instagramHref
     ? [{ label: 'Instagram', href: instagramHref, external: true, icon: 'instagram' as const }]
@@ -445,7 +454,7 @@ const manifestLinkTag =
     <!-- Header Navigation -->
     <header class="sticky top-0 z-50 w-full border-b-4 border-[#4f4337] bg-[#eae0d0] shadow-[0_4px_0_rgba(95,82,69,0.7)]">
       <div class="mx-auto max-w-6xl px-4 py-3 sm:py-4">
-        <SiteNavigation locale={locale} pagePath={logicalPath} localeSwitcherLinks={localeSwitcherLinks} />
+        <SiteNavigation locale={locale} pagePath={logicalPath} localeSwitcherLinks={localeSwitcherLinks} navLinks={headerNavLinks} />
       </div>
     </header>
 
@@ -520,20 +529,21 @@ const manifestLinkTag =
               ))}
             </div>
 
-            <div class="flex w-full flex-col items-center gap-1 lg:w-auto lg:items-end lg:pl-1">
-              {footerSecondaryLinks.map((link) => (
-                <a
-                  href={link.href}
-                  class="block w-full py-1 text-center uppercase tracking-[0.2em] text-[#2d251d] transition hover:text-[#7b6b58] lg:text-right"
-                  target={link.external ? '_blank' : undefined}
-                  rel={link.external ? 'noreferrer noopener' : undefined}
-                >
-                  <span>{link.label}</span>
-                  {link.external && <span class="ml-2 text-[9px] tracking-[0.18em] text-[#5f5346] lg:ml-2">External</span>}
-                </a>
-              ))}
-
-            </div>
+            {footerSecondaryLinks.length > 0 && (
+              <div class="flex w-full flex-col items-center gap-1 lg:w-auto lg:items-end lg:pl-1">
+                {footerSecondaryLinks.map((link) => (
+                  <a
+                    href={link.href}
+                    class="block w-full py-1 text-center uppercase tracking-[0.2em] text-[#2d251d] transition hover:text-[#7b6b58] lg:text-right"
+                    target={link.external ? '_blank' : undefined}
+                    rel={link.external ? 'noreferrer noopener' : undefined}
+                  >
+                    <span>{link.label}</span>
+                    {link.external && <span class="ml-2 text-[9px] tracking-[0.18em] text-[#5f5346] lg:ml-2">External</span>}
+                  </a>
+                ))}
+              </div>
+            )}
           </div>
         </div>
       </div>
