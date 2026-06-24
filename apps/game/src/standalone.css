@@ -1,0 +1,21 @@
+html,
+body,
+#bboyarena-game-standalone {
+  width: 100%;
+  min-width: 320px;
+  min-height: 100%;
+  margin: 0;
+}
+
+body {
+  background: #050505;
+  overflow: hidden;
+}
+
+#bboyarena-game-standalone {
+  min-height: 100vh;
+}
+
+#bboyarena-game-standalone #bboyarena-game-root {
+  min-height: 100vh;
+}
