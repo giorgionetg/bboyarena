@@ -374,8 +374,16 @@ const pagePath = '/play-the-game';
     }
 
     .play-showroom__screen {
-      aspect-ratio: 9 / 14;
-      min-height: 34rem;
+      aspect-ratio: auto;
+      height: min(72svh, 34rem);
+      min-height: 22rem;
+    }
+  }
+
+  @media (max-width: 480px), (max-aspect-ratio: 9 / 16) {
+    .play-showroom__screen {
+      height: min(76svh, 30rem);
+      min-height: 20rem;
     }
   }
 </style>

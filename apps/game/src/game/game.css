@@ -1732,3 +1732,52 @@
     width: 100%;
   }
 }
+
+@media (max-width: 640px), (max-aspect-ratio: 9 / 16) {
+  .bboy-game-root .game-shell {
+    align-items: stretch;
+    justify-content: stretch;
+    padding: 0.5rem;
+  }
+
+  .bboy-game-root .game-stage {
+    width: 100%;
+    height: calc(var(--game-viewport-height, 100svh) - 1rem);
+    aspect-ratio: auto;
+    min-height: 0;
+  }
+
+  .bboy-game-root .game-hud {
+    padding: 0.5rem;
+  }
+
+  .bboy-game-root .game-hud--section {
+    padding-top: 3rem;
+    padding-bottom: 0.75rem;
+  }
+
+  .bboy-game-root .game-mainmenu__left {
+    width: min(18rem, 88%);
+    right: 0.5rem;
+    left: 0.5rem;
+    top: 0.5rem;
+    bottom: auto;
+  }
+
+  .bboy-game-root .game-mainmenu__topbar {
+    left: 0.5rem;
+    right: 0.5rem;
+    top: auto;
+    bottom: 0.5rem;
+  }
+
+  .bboy-game-root .game-status-pill {
+    top: 0.45rem;
+    left: 0.45rem;
+  }
+
+  .bboy-game-root .game-fullscreen-toggle {
+    left: 0.45rem;
+    bottom: 0.45rem;
+  }
+}
