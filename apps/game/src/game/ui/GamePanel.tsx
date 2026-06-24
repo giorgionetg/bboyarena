@@ -7,7 +7,7 @@ interface GamePanelProps {
 }
 
 export default function GamePanel({ variant = 'light', className = '', children }: GamePanelProps) {
-  const classes = ['game-panel', `game-panel--${variant}`, className].filter(Boolean).join(' ');
+  const classes = ['game-panel', 'font-game', `game-panel--${variant}`, className].filter(Boolean).join(' ');
 
   return <div className={classes}>{children}</div>;
 }

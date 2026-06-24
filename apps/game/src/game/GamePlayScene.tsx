@@ -5,15 +5,15 @@ import { useGameStore, type GamePlayMode } from './state/useGameStore';
 import CanvasScene from './CanvasScene';
 import GameFullscreenToggle from './ui/GameFullscreenToggle';
 import GamePlayHUD from './ui/GamePlayHUD';
-import type { LocaleCode } from './copy';
+import type { GameCopy } from './copy';
 
 interface GamePlaySceneProps {
   mode: GamePlayMode;
-  locale?: LocaleCode;
+  copy: GameCopy;
   rootRef: RefObject<HTMLDivElement | null>;
 }
 
-export default function GamePlayScene({ mode, locale = 'en-US', rootRef }: GamePlaySceneProps) {
+export default function GamePlayScene({ mode, copy, rootRef }: GamePlaySceneProps) {
   const [state, send] = useMachine(gameMachine);
   const openMainMenu = useGameStore((store) => store.openMainMenu);
 
@@ -23,16 +23,16 @@ export default function GamePlayScene({ mode, locale = 'en-US', rootRef }: GameP
         type="button"
         className="game-status-pill game-status-pill--interactive"
         onClick={openMainMenu}
-        aria-label="Return to main menu"
+        aria-label={copy.backToMenu}
       >
-        Play / {mode} / {typeof state.value === 'string' ? state.value : 'idle'}
+        {copy.playStatus} / {mode} / {typeof state.value === 'string' ? state.value : 'idle'}
       </button>
       <CanvasScene gameState={typeof state.value === 'string' ? state.value : 'idle'} />
       <GamePlayHUD
         gameState={typeof state.value === 'string' ? state.value : 'idle'}
         send={send}
         onExit={openMainMenu}
-        locale={locale}
+        copy={copy}
       />
       <GameFullscreenToggle targetRef={rootRef} />
     </>

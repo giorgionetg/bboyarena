@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { getGameCopy, type LocaleCode } from '../copy';
+import type { GameCopy } from '../copy';
 import { useGameStore } from '../state/useGameStore';
 import GameButton from './GameButton';
 import GamePanel from './GamePanel';
@@ -8,11 +8,10 @@ interface GamePlayHudProps {
   gameState: string;
   send: (event: { type: string }) => void;
   onExit: () => void;
-  locale?: LocaleCode;
+  copy: GameCopy;
 }
 
-export default function GamePlayHUD({ gameState, send, onExit, locale = 'en-US' }: GamePlayHudProps) {
-  const copy = getGameCopy(locale);
+export default function GamePlayHUD({ gameState, send, onExit, copy }: GamePlayHudProps) {
   const {
     selectedCharacter,
     score,
@@ -57,17 +56,16 @@ export default function GamePlayHUD({ gameState, send, onExit, locale = 'en-US' 
 
   const combo = gameState === 'playing' ? Math.max(1, Math.floor(score / 30) + 1) : Math.max(0, Math.floor(score / 40));
   const stamina = gameState === 'playing' ? Math.max(18, 100 - elapsedSeconds * 3 - Math.floor(score / 8)) : 100;
-  const activeMove = ['Toprock', 'Freeze', 'Swipe', 'Footwork'][elapsedSeconds % 4];
+  const moves = [copy.topRock, copy.freeze, copy.swipe, copy.footwork];
+  const activeMove = moves[elapsedSeconds % moves.length];
 
   return (
     <div className="game-hud game-hud--play">
       <div className="game-hud__top">
         <GamePanel variant="light" className="game-play-banner">
-          <p className="game-panel__label">Play scene</p>
-          <div className="game-panel__title">{selectedMode === 'career' ? 'Story Mode' : 'Training'}</div>
-          <p className="game-panel__description">
-            The 3D arena is live. Keep the overlay light and use fullscreen for the best stage feel.
-          </p>
+          <p className="game-panel__label">{copy.playScene}</p>
+          <div className="game-panel__title">{selectedMode === 'career' ? copy.storyModePlayTitle : copy.trainingPlayTitle}</div>
+          <p className="game-panel__description">{copy.playSceneDescription}</p>
         </GamePanel>
       </div>
 
@@ -134,7 +132,7 @@ export default function GamePlayHUD({ gameState, send, onExit, locale = 'en-US' 
             <div style={{ minWidth: 0 }}>
               <p className="game-panel__label">{copy.moveList}</p>
               <ul style={{ margin: '0.75rem 0 0', padding: 0, listStyle: 'none', display: 'grid', gap: '0.4rem' }}>
-                {['Toprock', 'Swipe', 'Freeze', 'Footwork'].map((move, index) => (
+                {moves.map((move, index) => (
                   <li
                     key={move}
                     style={{
@@ -160,7 +158,7 @@ export default function GamePlayHUD({ gameState, send, onExit, locale = 'en-US' 
 
       <div className="game-hud__center">
         <GameButton variant="primary" className="game-battle-button" onClick={() => incrementScore(10)}>
-          Tap for score
+          {copy.tapForScore}
         </GameButton>
       </div>
 
@@ -171,7 +169,7 @@ export default function GamePlayHUD({ gameState, send, onExit, locale = 'en-US' 
               {copy.startRound}
             </GameButton>
             <GameButton variant="secondary" onClick={onExit}>
-              Back to menu
+              {copy.backToMenu}
             </GameButton>
           </>
         ) : gameState === 'playing' ? (
@@ -183,7 +181,7 @@ export default function GamePlayHUD({ gameState, send, onExit, locale = 'en-US' 
               {copy.finishRound}
             </GameButton>
             <GameButton variant="ghost" onClick={onExit}>
-              Back to menu
+              {copy.backToMenu}
             </GameButton>
           </>
         ) : (
@@ -195,7 +193,7 @@ export default function GamePlayHUD({ gameState, send, onExit, locale = 'en-US' 
               {copy.reset}
             </GameButton>
             <GameButton variant="ghost" onClick={onExit}>
-              Back to menu
+              {copy.backToMenu}
             </GameButton>
           </>
         )}

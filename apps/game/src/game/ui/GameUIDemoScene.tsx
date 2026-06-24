@@ -19,6 +19,7 @@ const loadoutItems = [
 
 export default function GameUIDemoScene() {
   const rootRef = useRef<HTMLDivElement | null>(null);
+  const logoSrc = `${import.meta.env.BASE_URL}logo-bboyarena.svg`;
 
   return (
     <div id="bboyarena-game-root" className="bboy-game-root" ref={rootRef}>
@@ -31,7 +32,7 @@ export default function GameUIDemoScene() {
           <div className="game-ui-demo">
             <section className="game-ui-demo__left" aria-label="Primary menu demo">
               <div className="game-mainmenu__brand">
-                <img src="/logo-bboyarena.svg" alt="BboyArena" className="game-mainmenu__logo-image" />
+                <img src={logoSrc} alt="BboyArena" className="game-mainmenu__logo-image" />
                 <div className="game-mainmenu__subtitle">AAA style pass / 2D HUD kit</div>
               </div>
 

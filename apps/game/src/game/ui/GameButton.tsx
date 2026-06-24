@@ -18,6 +18,7 @@ export default function GameButton({
 }: GameButtonProps) {
   const classes = [
     'game-button',
+    'font-game motion-reduce:transition-none',
     `game-button--${variant}`,
     fullWidth ? 'game-button--full' : '',
     className

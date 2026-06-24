@@ -1,18 +1,20 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useGameStore, type GameMenuScene } from './state/useGameStore';
 import GameFullscreenToggle from './ui/GameFullscreenToggle';
 import GameFullscreenReticle from './ui/GameFullscreenReticle';
 import GameHUD from './ui/GameHUD';
 import GamePlayScene from './GamePlayScene';
-import type { LocaleCode } from './copy';
+import { getDefaultGameCopy, loadGameCopy, type GameCopy, type LocaleCode } from './copy';
 import './game.css';
 
 interface GameAppProps {
-  locale?: LocaleCode;
+  locale?: LocaleCode | string;
 }
 
 export default function GameApp({ locale = 'en-US' }: GameAppProps) {
   const rootRef = useRef<HTMLDivElement | null>(null);
+  const [copy, setCopy] = useState<GameCopy>(() => getDefaultGameCopy());
+  const [resolvedLocale, setResolvedLocale] = useState<LocaleCode>('en-US');
   const scene = useGameStore((state) => state.scene);
   const selectedMode = useGameStore((state) => state.selectedMode);
   const setScene = useGameStore((state) => state.setScene);
@@ -38,23 +40,38 @@ export default function GameApp({ locale = 'en-US' }: GameAppProps) {
     return () => window.removeEventListener('resize', syncViewportHeight);
   }, []);
 
+  useEffect(() => {
+    let isMounted = true;
+
+    loadGameCopy(locale).then((loadedCopy) => {
+      if (!isMounted) return;
+      setCopy(loadedCopy.copy);
+      setResolvedLocale(loadedCopy.locale);
+    });
+
+    return () => {
+      isMounted = false;
+    };
+  }, [locale]);
+
+  console.log('GameApp: rendering scene', scene, 'with mode', selectedMode, 'and locale', resolvedLocale);
   return (
     <div id="bboyarena-game-root" className="bboy-game-root" ref={rootRef}>
       <div className="game-shell">
         <div className="game-stage" data-scene={scene}>
           {scene === 'career' || scene === 'training' ? (
-            <GamePlayScene mode={selectedMode} locale={locale} rootRef={rootRef} />
+            <GamePlayScene mode={selectedMode} copy={copy} rootRef={rootRef} />
           ) : (
             <>
               <button
                 type="button"
                 className="game-status-pill game-status-pill--interactive"
                 onClick={cycleScene}
-                aria-label="Cycle game scene"
+                aria-label={copy.sceneSelector}
               >
-                Scene selector / {scene}
+                {copy.sceneSelector} / {scene}
               </button>
-              <GameHUD locale={locale} />
+              <GameHUD copy={copy} />
               <GameFullscreenToggle targetRef={rootRef} />
             </>
           )}

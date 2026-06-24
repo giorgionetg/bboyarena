@@ -9,8 +9,10 @@ if (!mountNode) {
   throw new Error('Missing #bboyarena-game-standalone mount node.');
 }
 
+const gameLocale = document.documentElement.lang || window.navigator.language || 'en-US';
+
 createRoot(mountNode).render(
   <React.StrictMode>
-    <GameApp locale="en-US" />
+    <GameApp locale={gameLocale} />
   </React.StrictMode>
 );
