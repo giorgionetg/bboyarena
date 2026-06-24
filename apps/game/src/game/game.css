@@ -201,6 +201,7 @@
   gap: var(--game-space-4);
   padding: clamp(0.75rem, 2vw, 1.5rem);
   pointer-events: none;
+  min-height: 0;
 }
 
 .bboy-game-root .game-hud--splash,
@@ -302,6 +303,7 @@
   width: 100%;
   height: 100%;
   min-height: 0;
+  overflow: hidden;
 }
 
 .bboy-game-root .game-mainmenu__left {
@@ -349,6 +351,9 @@
 .bboy-game-root .game-mainmenu__nav {
   display: grid;
   gap: var(--game-space-3);
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
   pointer-events: auto;
 }
 
@@ -828,6 +833,7 @@
 .bboy-game-root .game-section-shell {
   width: min(100%, 50rem);
   max-height: 100%;
+  min-height: 0;
   display: grid;
   gap: var(--game-space-5);
   padding: clamp(1.05rem, 2.2vw, 1.5rem);
@@ -837,6 +843,7 @@
   border-color: rgba(255, 255, 255, 0.14);
   box-shadow: 0 12px 0 rgba(0, 0, 0, 0.55), 0 28px 70px rgba(0, 0, 0, 0.42);
   overflow: auto;
+  overscroll-behavior: contain;
 }
 
 .bboy-game-root .game-section-shell__header {
@@ -991,6 +998,7 @@
   pointer-events: none;
   display: grid;
   gap: 0.75rem;
+  min-height: 0;
 }
 
 .bboy-game-root .game-hud__top > * {
@@ -1440,6 +1448,7 @@
 
 .bboy-game-root .game-hud__bottom {
   display: flex;
+  flex-wrap: wrap;
   justify-content: center;
   gap: 0.75rem;
   pointer-events: none;
@@ -1611,6 +1620,13 @@
 }
 
 @media (max-width: 640px) {
+  .bboy-game-root {
+    --game-panel-pad-x: 0.9rem;
+    --game-panel-pad-y: 0.75rem;
+    --game-button-pad-x: 0.9rem;
+    --game-button-pad-y: 0.7rem;
+  }
+
   .bboy-game-root .game-hud {
     padding: 0.65rem;
   }
@@ -1619,10 +1635,62 @@
     padding-top: 3.25rem;
   }
 
+  .bboy-game-root .game-hud--menu {
+    display: block;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding: 3.15rem 0.65rem 4.1rem;
+    pointer-events: auto;
+  }
+
+  .bboy-game-root .game-mainmenu {
+    display: grid;
+    gap: var(--game-space-3);
+    min-height: 100%;
+    overflow: visible;
+  }
+
   .bboy-game-root .game-mainmenu__left {
-    width: min(18rem, 88%);
-    bottom: auto;
-    right: 0.65rem;
+    position: relative;
+    inset: auto;
+    width: min(100%, 22rem);
+    display: grid;
+    grid-template-rows: auto auto;
+    gap: var(--game-space-3);
+    padding-right: 0;
+    margin-inline: auto;
+  }
+
+  .bboy-game-root .game-mainmenu__brand {
+    justify-items: center;
+    text-align: center;
+  }
+
+  .bboy-game-root .game-mainmenu__logo-image {
+    width: min(100%, 12rem);
+  }
+
+  .bboy-game-root .game-mainmenu__subtitle {
+    font-size: 0.58rem;
+  }
+
+  .bboy-game-root .game-mainmenu__nav {
+    overflow: visible;
+  }
+
+  .bboy-game-root .game-mode-button {
+    min-height: 3.25rem;
+    gap: var(--game-space-2);
+  }
+
+  .bboy-game-root .game-mode-button__title {
+    font-size: 0.78rem;
+    letter-spacing: 0.14em;
+  }
+
+  .bboy-game-root .game-mode-button__note {
+    font-size: 0.55rem;
+    letter-spacing: 0.16em;
   }
 
   .bboy-game-root .game-mainmenu__topbar,
@@ -1658,8 +1726,35 @@
   }
 
   .bboy-game-root .game-mainmenu__topbar {
-    right: 0.65rem;
-    left: 0.65rem;
+    position: relative;
+    inset: auto;
+    width: min(100%, 22rem);
+    margin-inline: auto;
+    gap: var(--game-space-2);
+  }
+
+  .bboy-game-root .game-profile-card {
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+
+  .bboy-game-root .game-profile-card__avatar {
+    width: 2.35rem;
+    height: 2.35rem;
+  }
+
+  .bboy-game-root .game-profile-card__name {
+    font-size: 0.72rem;
+    letter-spacing: 0.14em;
+  }
+
+  .bboy-game-root .game-profile-card__meta {
+    font-size: 0.54rem;
+    letter-spacing: 0.12em;
+  }
+
+  .bboy-game-root .game-currency-card {
+    min-height: 3rem;
+    justify-content: space-between;
   }
 
   .bboy-game-root .game-scene-grid {
@@ -1678,6 +1773,7 @@
     min-height: 2.85rem;
     padding-inline: 0.95rem;
     font-size: 0.66rem;
+    letter-spacing: 0.18em;
   }
 
   .bboy-game-root .game-crew-list {
@@ -1691,6 +1787,11 @@
   .bboy-game-root .game-fullscreen-toggle {
     left: 0.55rem;
     bottom: 0.55rem;
+  }
+
+  .bboy-game-root .game-fullscreen-toggle__button {
+    min-width: 2.55rem;
+    min-height: 2.55rem;
   }
 
   .bboy-game-root .game-ui-demo {
@@ -1756,19 +1857,96 @@
     padding-bottom: 0.75rem;
   }
 
-  .bboy-game-root .game-mainmenu__left {
-    width: min(18rem, 88%);
-    right: 0.5rem;
-    left: 0.5rem;
-    top: 0.5rem;
-    bottom: auto;
+  .bboy-game-root .game-hud--splash {
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    pointer-events: auto;
   }
 
-  .bboy-game-root .game-mainmenu__topbar {
-    left: 0.5rem;
-    right: 0.5rem;
-    top: auto;
-    bottom: 0.5rem;
+  .bboy-game-root .game-splash-layout {
+    min-height: 100%;
+    align-content: center;
+    padding: 2.5rem 0 3.75rem;
+  }
+
+  .bboy-game-root .game-splash-logo-image {
+    width: min(100%, 12.5rem);
+  }
+
+  .bboy-game-root .game-splash-kicker {
+    font-size: 0.56rem;
+    letter-spacing: 0.22em;
+  }
+
+  .bboy-game-root .game-splash-card {
+    width: min(100%, 21rem);
+  }
+
+  .bboy-game-root .game-hud--play {
+    display: grid;
+    grid-template-rows: auto minmax(0, 1fr) auto;
+    gap: var(--game-space-2);
+    overflow: hidden;
+    padding: 3.05rem 0.5rem 3.85rem;
+  }
+
+  .bboy-game-root .game-hud__top {
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    align-content: start;
+    max-height: min(46svh, 20rem);
+    padding-right: 0.1rem;
+    pointer-events: auto;
+  }
+
+  .bboy-game-root .game-hud__top--compact {
+    grid-template-columns: 1fr;
+  }
+
+  .bboy-game-root .game-play-banner {
+    display: none;
+  }
+
+  .bboy-game-root .game-hud__center {
+    align-items: end;
+    padding: 0;
+  }
+
+  .bboy-game-root .game-hud__bottom {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--game-space-2);
+    pointer-events: auto;
+  }
+
+  .bboy-game-root .game-hud__bottom .game-button,
+  .bboy-game-root .game-battle-button {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .bboy-game-root .game-score-grid {
+    grid-template-columns: 1fr;
+    margin-top: var(--game-space-3);
+  }
+
+  .bboy-game-root .game-score-card {
+    padding: var(--game-space-2) var(--game-space-3);
+  }
+
+  .bboy-game-root .game-timer__value {
+    font-size: 2.15rem;
+  }
+
+  .bboy-game-root .game-panel__label,
+  .bboy-game-root .game-score-label,
+  .bboy-game-root .game-timer__meta {
+    letter-spacing: 0.18em;
+  }
+
+  .bboy-game-root .game-panel__description {
+    font-size: 0.78rem;
+    line-height: 1.45;
   }
 
   .bboy-game-root .game-status-pill {
@@ -1779,5 +1957,29 @@
   .bboy-game-root .game-fullscreen-toggle {
     left: 0.45rem;
     bottom: 0.45rem;
+  }
+}
+
+@media (max-height: 520px) and (orientation: landscape) {
+  .bboy-game-root .game-hud--play {
+    grid-template-columns: minmax(13rem, 18rem) minmax(0, 1fr) minmax(12rem, 16rem);
+    grid-template-rows: 1fr;
+    padding: 2.7rem 0.5rem 0.5rem;
+  }
+
+  .bboy-game-root .game-hud__top {
+    max-height: none;
+  }
+
+  .bboy-game-root .game-hud__center {
+    align-items: center;
+  }
+
+  .bboy-game-root .game-hud__bottom {
+    align-self: end;
+  }
+
+  .bboy-game-root .game-section-shell {
+    max-height: calc(var(--game-viewport-height, 100svh) - 4rem);
   }
 }
