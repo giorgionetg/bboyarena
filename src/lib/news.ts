@@ -1,4 +1,5 @@
 import { withBasePath } from './base';
+import { getPocketBaseConfig, normalizePocketBaseTags, type PocketBaseDevlogRecord } from './pocketbase';
 
 export type NewsCategory = 'devlog' | 'app' | 'scene';
 
@@ -26,7 +27,7 @@ export interface NewsItemBase {
 
 export interface LocalNewsItem extends NewsItemBase {
   sourceKind: 'local';
-  body: string[];
+  body: string[] | string;
 }
 
 export interface ExternalNewsItem extends NewsItemBase {
@@ -128,6 +129,10 @@ const LOCAL_NEWS: LocalNewsItem[] = [
   }
 ];
 
+let cachedAllNewsItemsPromise: Promise<NewsItem[]> | null = null;
+let cachedExternalSceneItemsPromise: Promise<ExternalNewsItem[]> | null = null;
+let cachedPocketBaseDevlogItemsPromise: Promise<LocalNewsItem[]> | null = null;
+
 const FEED_URL = import.meta.env.PUBLIC_NEWS_EXTERNAL_FEED_URL?.trim();
 const FEED_SOURCE_NAME = import.meta.env.PUBLIC_NEWS_EXTERNAL_SOURCE_NAME?.trim() || 'Fonte esterna';
 const FEED_SOURCE_URL = import.meta.env.PUBLIC_NEWS_EXTERNAL_SOURCE_URL?.trim();
@@ -162,6 +167,43 @@ const pickTagList = (value: string, fallback: string[]) =>
 const resolvePublishedTime = (value?: string) => {
   const parsed = value ? Date.parse(value) : Number.NaN;
   return Number.isNaN(parsed) ? new Date().toISOString() : new Date(parsed).toISOString();
+};
+
+const normalizeBody = (body?: string[] | string): string[] | string => {
+  if (Array.isArray(body)) {
+    return body.map((paragraph) => String(paragraph).trim()).filter(Boolean);
+  }
+
+  return typeof body === 'string' ? body.trim() : '';
+};
+
+const mapPocketBaseDevlogRecord = (record: PocketBaseDevlogRecord): LocalNewsItem => {
+  const title = String(record.title || 'Untitled devlog').trim();
+  const description = String(record.description || record.excerpt || title).trim();
+  const excerpt = String(record.excerpt || record.description || title).trim();
+  const body = normalizeBody(record.body);
+  const resolvedBody =
+    typeof body === 'string'
+      ? body
+      : body.length > 0
+        ? body
+        : [excerpt || description || title];
+
+  return {
+    category: 'devlog',
+    slug: String(record.slug || '').trim() || slugify(title),
+    sourceKind: 'local',
+    title,
+    description,
+    excerpt,
+    publishedTime: resolvePublishedTime(record.publishedTime),
+    modifiedTime: record.modifiedTime ? resolvePublishedTime(record.modifiedTime) : undefined,
+    author: String(record.author || 'BboyArena').trim() || 'BboyArena',
+    image: record.image?.trim() || undefined,
+    imageAlt: record.imageAlt?.trim() || title,
+    tags: normalizePocketBaseTags(record.tags).concat(['devlog']),
+    body: resolvedBody
+  };
 };
 
 const parseRssItems = (xml: string): ExternalNewsItem[] => {
@@ -213,12 +255,81 @@ const parseRssItems = (xml: string): ExternalNewsItem[] => {
   });
 };
 
-export const getAllNewsItems = async (): Promise<NewsItem[]> => {
-  const externalItems = await getExternalSceneNewsItems();
+const getPocketBaseDevlogItems = async (): Promise<LocalNewsItem[]> => {
+  if (cachedPocketBaseDevlogItemsPromise) {
+    return cachedPocketBaseDevlogItemsPromise;
+  }
 
-  return [...LOCAL_NEWS, ...externalItems].sort(
-    (left, right) => Date.parse(right.publishedTime) - Date.parse(left.publishedTime)
-  );
+  cachedPocketBaseDevlogItemsPromise = (async () => {
+    const config = getPocketBaseConfig();
+    if (!config) {
+      return [];
+    }
+
+    const filter = import.meta.env.PUBLIC_POCKETBASE_DEVLOGS_FILTER?.trim();
+    const perPage = 100;
+    const maxPages = 10;
+    const items: LocalNewsItem[] = [];
+
+    for (let page = 1; page <= maxPages; page += 1) {
+      const params = new URLSearchParams({
+        sort: '-publishedTime',
+        perPage: String(perPage),
+        page: String(page)
+      });
+
+      if (filter) {
+        params.set('filter', filter);
+      }
+
+      const url = `${config.baseUrl}/api/collections/${encodeURIComponent(config.collection)}/records?${params.toString()}`;
+
+      try {
+        const response = await fetch(url, { headers: { Accept: 'application/json' } });
+        if (!response.ok) {
+          return [];
+        }
+
+        const payload = await response.json();
+        const records = Array.isArray(payload?.items) ? (payload.items as PocketBaseDevlogRecord[]) : [];
+
+        for (const record of records) {
+          items.push(mapPocketBaseDevlogRecord(record));
+        }
+
+        if (records.length < perPage) {
+          break;
+        }
+      } catch {
+        return [];
+      }
+    }
+
+    return items;
+  })();
+
+  return cachedPocketBaseDevlogItemsPromise;
+};
+
+export const getAllNewsItems = async (): Promise<NewsItem[]> => {
+  if (!cachedAllNewsItemsPromise) {
+    cachedAllNewsItemsPromise = (async () => {
+      const [externalItems, pocketBaseDevlogItems] = await Promise.all([
+        getExternalSceneNewsItems(),
+        getPocketBaseDevlogItems()
+      ]);
+
+      const localDevlogItems = LOCAL_NEWS.filter((item) => item.category === 'devlog');
+      const localNonDevlogItems = LOCAL_NEWS.filter((item) => item.category !== 'devlog');
+      const devlogItems = pocketBaseDevlogItems.length > 0 ? pocketBaseDevlogItems : localDevlogItems;
+
+      return [...devlogItems, ...localNonDevlogItems, ...externalItems].sort(
+        (left, right) => Date.parse(right.publishedTime) - Date.parse(left.publishedTime)
+      );
+    })();
+  }
+
+  return cachedAllNewsItemsPromise;
 };
 
 export const getNewsItemsByCategory = async (category: NewsCategory): Promise<NewsItem[]> => {
@@ -234,22 +345,30 @@ export const getNewsItemByCategoryAndSlug = async (category: NewsCategory, slug:
 export const getRecentNewsItems = async (limit = 6): Promise<NewsItem[]> => (await getAllNewsItems()).slice(0, limit);
 
 const getExternalSceneNewsItems = async (): Promise<ExternalNewsItem[]> => {
-  if (!FEED_URL) {
-    return [];
+  if (cachedExternalSceneItemsPromise) {
+    return cachedExternalSceneItemsPromise;
   }
 
-  try {
-    const response = await fetch(FEED_URL);
-
-    if (!response.ok) {
+  cachedExternalSceneItemsPromise = (async () => {
+    if (!FEED_URL) {
       return [];
     }
 
-    const xml = await response.text();
-    return parseRssItems(xml);
-  } catch {
-    return [];
-  }
+    try {
+      const response = await fetch(FEED_URL);
+
+      if (!response.ok) {
+        return [];
+      }
+
+      const xml = await response.text();
+      return parseRssItems(xml);
+    } catch {
+      return [];
+    }
+  })();
+
+  return cachedExternalSceneItemsPromise;
 };
 
 export const getNewsCategoryMeta = (category: NewsCategory) => NEWS_CATEGORIES[category];

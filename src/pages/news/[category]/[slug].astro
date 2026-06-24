@@ -1,5 +1,6 @@
 ---
 import Layout from '../../../components/layout/Layout.astro';
+import MarkdownBody from '../../../components/news/MarkdownBody.astro';
 import {
   NEWS_CATEGORIES,
   getNewsCategoryPath,
@@ -119,7 +120,7 @@ if (!item) {
           </p>
         </>
       ) : (
-            item.body.map((paragraph) => <p>{paragraph}</p>)
+            <MarkdownBody body={item.body} />
           )}
         </div>
       </div>

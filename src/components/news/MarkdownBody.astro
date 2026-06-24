@@ -1,0 +1,94 @@
+---
+import { renderMarkdown } from '../../lib/markdown';
+
+interface Props {
+  body?: string[] | string;
+  class?: string;
+}
+
+const { body, class: className = '' } = Astro.props as Props;
+const html = renderMarkdown(body);
+---
+
+<div class={`news-markdown ${className}`.trim()} set:html={html} />
+
+<style>
+  .news-markdown :global(p) {
+    margin: 0 0 1rem;
+  }
+
+  .news-markdown :global(p:last-child) {
+    margin-bottom: 0;
+  }
+
+  .news-markdown :global(h1),
+  .news-markdown :global(h2),
+  .news-markdown :global(h3),
+  .news-markdown :global(h4) {
+    margin: 1.5rem 0 0.75rem;
+    color: inherit;
+    font-weight: 900;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    line-height: 1.05;
+  }
+
+  .news-markdown :global(h1:first-child),
+  .news-markdown :global(h2:first-child),
+  .news-markdown :global(h3:first-child),
+  .news-markdown :global(h4:first-child) {
+    margin-top: 0;
+  }
+
+  .news-markdown :global(ul),
+  .news-markdown :global(ol) {
+    margin: 0 0 1rem;
+    padding-left: 1.25rem;
+  }
+
+  .news-markdown :global(li + li) {
+    margin-top: 0.4rem;
+  }
+
+  .news-markdown :global(a) {
+    color: #d9e2bf;
+    text-decoration: underline;
+    text-decoration-thickness: 2px;
+    text-underline-offset: 0.18em;
+  }
+
+  .news-markdown :global(strong) {
+    color: #fff8eb;
+    font-weight: 900;
+  }
+
+  .news-markdown :global(code) {
+    border: 1px solid rgba(217, 201, 177, 0.26);
+    border-radius: 0.5rem;
+    background: rgba(0, 0, 0, 0.18);
+    padding: 0.1rem 0.35rem;
+    font-size: 0.95em;
+  }
+
+  .news-markdown :global(pre) {
+    overflow-x: auto;
+    border: 1px solid rgba(217, 201, 177, 0.26);
+    border-radius: 1rem;
+    background: rgba(0, 0, 0, 0.26);
+    padding: 1rem;
+    margin: 0 0 1rem;
+  }
+
+  .news-markdown :global(pre code) {
+    border: 0;
+    background: transparent;
+    padding: 0;
+  }
+
+  .news-markdown :global(blockquote) {
+    margin: 0 0 1rem;
+    padding-left: 1rem;
+    border-left: 3px solid rgba(217, 201, 177, 0.45);
+    color: rgba(248, 241, 231, 0.9);
+  }
+</style>
