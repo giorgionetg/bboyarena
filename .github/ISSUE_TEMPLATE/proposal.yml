@@ -1,0 +1,60 @@
+name: Proposal
+description: Propose code, assets, moves, events, servers, documentation or commercial work.
+title: "[Proposal]: "
+labels:
+  - proposal
+body:
+  - type: textarea
+    id: proposal
+    attributes:
+      label: What do you want to build or propose?
+      description: Describe the idea clearly.
+    validations:
+      required: true
+  - type: dropdown
+    id: category
+    attributes:
+      label: Proposal category
+      options:
+        - Code
+        - Asset
+        - Move / animation
+        - Event
+        - Server
+        - Documentation
+        - Commercial proposal
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: usefulness
+    attributes:
+      label: Why is it useful?
+    validations:
+      required: true
+  - type: dropdown
+    id: commercial
+    attributes:
+      label: Is this non-commercial/community or commercial?
+      options:
+        - Non-commercial / community
+        - Commercial
+        - Not sure
+    validations:
+      required: true
+  - type: checkboxes
+    id: rights
+    attributes:
+      label: Rights and credits
+      options:
+        - label: I own all rights to the proposed material or have permission to submit it.
+          required: true
+        - label: I want credits if this is accepted.
+          required: false
+        - label: I am asking for compensation or revenue share and understand this requires a separate agreement.
+          required: false
+  - type: textarea
+    id: notes
+    attributes:
+      label: Additional notes
+      description: Add links, references, sketches or context if useful.

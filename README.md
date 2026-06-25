@@ -6,6 +6,45 @@
 
 This repository is the public home of the project. If you want to follow the build, save the repo, and stay close to future updates, this is the right place.
 
+## Project status
+
+BboyArena is currently early/pre-0.0.1. The repository is public to support learning, transparency and community collaboration while the project is still taking shape.
+
+The current goal is to keep the monorepo simple, protect the official identity early, and build toward a first local/offline playable foundation before larger online systems.
+
+## Licensing model
+
+BboyArena uses a mixed-license strategy:
+
+- an open technical core for reusable generic code;
+- source-available official game and website work;
+- controlled official brand, assets, ranked ecosystem, marketplace, certified servers and commercial use;
+- open protocol and documentation material where appropriate.
+
+Local, offline and non-commercial use is intended to be free. Generic technical components are intended to become permissive/open where they are clearly separated from official BboyArena identity and services.
+
+See [legal/LICENSE-SCOPE.md](./legal/LICENSE-SCOPE.md).
+
+## Commercial use
+
+The public source code does not automatically grant permission to commercially exploit the BboyArena brand, official game, ranked ecosystem, marketplace, certified servers, official events or official community audience.
+
+Commercial use in the breaking/bboy/bgirl/hip-hop street dance segment, official server certification, large sponsor work and use of BboyArena brand assets require approval.
+
+See [legal/COMMERCIAL-USE.md](./legal/COMMERCIAL-USE.md), [legal/TRADEMARKS.md](./legal/TRADEMARKS.md) and [legal/SERVER-CERTIFICATION.md](./legal/SERVER-CERTIFICATION.md).
+
+## Contributing
+
+BboyArena is community-driven and founder-led. Substantial contributions should be discussed before work starts, so contributors do not waste time and the project roadmap stays coherent.
+
+See [legal/CONTRIBUTING.md](./legal/CONTRIBUTING.md) and [legal/CLA.md](./legal/CLA.md).
+
+## Governance
+
+BboyArena is intended as a founder-led certified ecosystem: community proposals, mods, events, servers and contributions are welcome, while final authority over roadmap, brand, licensing, official ranked, marketplace, server certification, official events and monetization remains with the founder/project lead unless explicitly changed later.
+
+See [legal/GOVERNANCE.md](./legal/GOVERNANCE.md) and [ROADMAP.md](./ROADMAP.md).
+
 ## What this project is
 
 BboyArena is a work-in-progress built around breaking culture, urban energy, and a raw graffiti-and-concrete visual identity.
