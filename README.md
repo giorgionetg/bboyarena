@@ -1,6 +1,6 @@
 # BboyArena.org
 
-![BboyArena banner](./public/readme-banner.png)
+![BboyArena banner](./apps/website/public/readme-banner.png)
 
 **An open street culture project about breaking, creative movement, and a 3D browser game still in early development.**
 
@@ -151,9 +151,9 @@ If you need short copy for sharing the repo or describing the project:
 
 ## Marketing assets
 
-- Banner: [`public/readme-banner.png`](./public/readme-banner.png)
-- App icon: [`public/icon.png`](./public/icon.png)
-- PWA icons: [`public/android-chrome-192x192.png`](./public/android-chrome-192x192.png), [`public/android-chrome-512x512.png`](./public/android-chrome-512x512.png)
+- Banner: [`apps/website/public/readme-banner.png`](./apps/website/public/readme-banner.png)
+- App icon: [`apps/website/public/icon.png`](./apps/website/public/icon.png)
+- PWA icons: [`apps/website/public/android-chrome-192x192.png`](./apps/website/public/android-chrome-192x192.png), [`apps/website/public/android-chrome-512x512.png`](./apps/website/public/android-chrome-512x512.png)
 
 ## Technical backup
 
