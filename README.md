@@ -2,15 +2,41 @@
 
 ![BboyArena banner](./apps/website/public/readme-banner.png)
 
+*BboyArena is an early-stage open development project for breaking culture and a future 3D browser game. Today it includes the public website, project identity, legal/governance foundation and the first technical shell of the game, but not yet a playable prototype.*
+
 **An open street culture project about breaking, creative movement, and a 3D browser game still in early development.**
 
 This repository is the public home of the project. If you want to follow the build, save the repo, and stay close to future updates, this is the right place.
 
 ## Project status
 
-BboyArena is currently early/pre-0.0.1. The repository is public to support learning, transparency and community collaboration while the project is still taking shape.
+BboyArena is currently early/pre-0.0.1.
 
-The current goal is to keep the monorepo simple, protect the official identity early, and build toward a first local/offline playable foundation before larger online systems.
+The repository is public to support learning, transparency and community collaboration while the project is still taking shape.
+
+At the moment, BboyArena is not a playable game and should not be presented as an MVP. The current `apps/game` package contains only the early standalone shell of the future game: menus, UI experiments, placeholder scenes and technical groundwork.
+
+The current goal is to keep the monorepo simple, protect the official identity early, stabilize the public website, and build toward a first local/offline playable prototype.
+
+
+## What exists today
+
+BboyArena is not a playable game yet.
+
+The repository currently contains:
+
+* the public website;
+* the project identity, manifesto, legal and governance material;
+* the early standalone game shell;
+* menu/UI experiments;
+* placeholder scenes;
+* technical groundwork for a future browser-based 3D breaking game;
+* documentation for the intended architecture and direction.
+
+There is currently no complete gameplay loop, no character controller, no battle system, no scoring system, no multiplayer mode and no finished playable prototype.
+
+The goal of this phase is to build the public foundation of the project while progressively moving toward a first local/offline playable prototype.
+
 
 ## Licensing model
 
