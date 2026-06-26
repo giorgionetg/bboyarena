@@ -115,4 +115,14 @@ The roadmap is intentionally high level.
 
 ```bash
 npm install
+
+# Run the website on 4321
 npm run dev
+
+# Run the website + game
+npm run dev:all
+
+# Run the game standalone on 4322
+npm run game:dev
+
+```
