@@ -11,6 +11,7 @@ import {
 } from '../../../lib/news';
 import { withBasePath } from '../../../lib/base';
 import { buildLocalizedAlternates, buildLocalizedPath } from '../../../lib/i18n';
+import { formatLocalizedDate, formatLocalizedDateTime } from '../../../lib/date';
 
 export async function getStaticPaths() {
   const paths = [];
@@ -73,7 +74,7 @@ if (!item) {
         >
           {category.label}
         </span>
-        <span class="text-[#756553]">{new Date(item.publishedTime).toLocaleDateString('en-US')}</span>
+        <span class="text-[#756553]">{formatLocalizedDate(item.publishedTime, 'en-US')}</span>
         {isExternalNewsItem(item) && <span class="text-[#bc613a]">{item.sourceName}</span>}
       </div>
 
@@ -138,12 +139,12 @@ if (!item) {
           </p>
           <p>
             <span class="font-black uppercase tracking-[0.18em] text-[#2d261f]">Published:</span>{' '}
-              {new Date(item.publishedTime).toLocaleString('en-US')}
+              {formatLocalizedDateTime(item.publishedTime, 'en-US')}
           </p>
           {item.modifiedTime && (
             <p>
               <span class="font-black uppercase tracking-[0.18em] text-[#2d261f]">Updated:</span>{' '}
-              {new Date(item.modifiedTime).toLocaleString('en-US')}
+              {formatLocalizedDateTime(item.modifiedTime, 'en-US')}
             </p>
           )}
           <p>

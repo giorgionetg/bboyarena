@@ -16,6 +16,7 @@ import {
   SUPPORTED_LOCALES
 } from '../../../../lib/i18n';
 import { buildPocketBaseDevlogListUrl } from '../../../../lib/pocketbase';
+import { formatLocalizedDate } from '../../../../lib/date';
 
 export async function getStaticPaths() {
   const paths: { params: { locale: string; category: string } }[] = [];
@@ -90,7 +91,7 @@ const devlogPanoramaCopy =
                   <span class="street-chip rounded-full px-2.5 py-1" style={`background:${category.accent}22;color:${category.accent}`}>
                     {copy.news.categories[categoryKey].label}
                   </span>
-                  <span class="text-[#756553]">{new Date(item.publishedTime).toLocaleDateString('en-US')}</span>
+                  <span class="text-[#756553]">{formatLocalizedDate(item.publishedTime, locale)}</span>
                   {isExternalNewsItem(item) && <span class="text-[#bc613a]">{item.sourceName}</span>}
                 </div>
                 <h2 class="mt-3 text-xl font-black uppercase tracking-[0.12em] text-[#2d261f]">{item.title}</h2>
@@ -166,7 +167,7 @@ const devlogPanoramaCopy =
               <article class="rounded-[1.25rem] border-2 border-[#4f4337] bg-[#f6efe4] p-4 shadow-[0_8px_0_rgba(95,82,69,0.25)]">
                 <div class="flex flex-wrap items-center gap-2 text-[10px] font-black uppercase tracking-[0.24em]">
                   <span class="street-chip rounded-full px-2.5 py-1" style="background:#7c8f4c22;color:#7c8f4c">Devlog</span>
-                  <span class="text-[#756553]">${publishedTime ? new Date(publishedTime).toLocaleDateString(locale) : ''}</span>
+                  <span class="text-[#756553]">${publishedTime ? new Intl.DateTimeFormat(locale, { day: '2-digit', month: '2-digit', year: 'numeric' }).format(new Date(publishedTime)) : ''}</span>
                   <span class="text-[#bc613a]">${author}</span>
                 </div>
                 <h2 class="mt-3 text-xl font-black uppercase tracking-[0.12em] text-[#2d261f]">${title}</h2>

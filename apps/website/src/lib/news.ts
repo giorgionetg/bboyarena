@@ -66,6 +66,88 @@ export const NEWS_CATEGORIES: Record<NewsCategory, NewsCategoryMeta> = {
 const LOCAL_NEWS: LocalNewsItem[] = [
   {
     category: 'devlog',
+    slug: 'a-windmill-is-not-just-a-spin',
+    sourceKind: 'local',
+    title: 'A Windmill Is Not Just a Spin',
+    description:
+      'A weekend spent studying the windmill revealed why powermoves need more than pose playback: they need a clear center, contact, tilt, rhythm, and flow.',
+    excerpt:
+      'What began as a Blender animation fix became a lesson about rotation, floor contact, and the movement system BboyArena needs for authentic powermoves.',
+    publishedTime: '2026-06-30T10:00:00+02:00',
+    modifiedTime: '2026-06-30T10:00:00+02:00',
+    author: 'BboyArena',
+    image: '/readme-banner.png',
+    imageAlt: 'BboyArena windmill animation development log',
+    tags: ['devlog', 'windmill', 'animation', 'blender', 'powermoves', 'three-js'],
+    body: `Before working on the windmill animation, I wanted to go back to where the move comes from.
+
+The windmill is usually traced back to Crazy Legs of Rock Steady Crew.
+The story is not that somebody designed it like a perfect technique on paper. It came from experimentation: from the backspin, from trying to hit a chair freeze, from over-rotating, and from discovering that the mistake could become a continuous movement.
+
+That is beautiful to me.
+
+Because this weekend, while working on BboyArena, I felt something similar in a very small way.
+
+At first, I thought I was only fixing an animation problem.
+
+The windmill looked almost right.
+The numbers in Blender were almost right.
+The character was rotating almost one full turn.
+
+But visually, something was wrong.
+
+The movement did not feel clean.
+
+After many tests, I understood the real issue:
+
+> A windmill is not just a character spinning.
+
+In breaking, the body is constantly changing its relationship with the floor.
+The shoulder, the back, the hips, the legs, the center of rotation — everything matters.
+
+A windmill has a center.
+It has contact.
+It has tilt.
+It has rhythm.
+It has flow.
+
+Some of my poses looked good by themselves, but they were built around the wrong center of rotation. So when I tried to connect them into a full loop, the movement started to break.
+
+That was the biggest lesson:
+
+> A pose is not only a shape.
+> A pose also depends on where the body is rotating from.
+
+For a normal animation, this may be easy to hide.
+For a powermove, it becomes obvious immediately.
+
+I also found a hidden problem in my Blender setup: one control had an axis correction that made posing easier at first, but later made the full rotation harder to trust.
+
+So the next step is not to create more poses.
+
+The next step is to simplify.
+
+I want to build a small clean test with:
+
+* a simple dummy character;
+* a clear spin center;
+* a few windmill poses;
+* visible floor contact points;
+* a smooth loop;
+* and a movement system that can later be translated into Three.js.
+
+This weekend was not just about fixing a Blender file.
+
+It was about understanding that BboyArena cannot treat powermoves like generic animations.
+
+Breaking is not just pose playback.
+
+A windmill came from rotation, contact, accident, control and style.
+
+That is exactly the kind of feeling I want to capture in the game.`
+  },
+  {
+    category: 'devlog',
     slug: 'development-log-public-surface-pwa-game-ui',
     sourceKind: 'local',
     title: 'Development log: public surface, PWA, and game UI foundation',
